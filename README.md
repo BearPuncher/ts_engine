@@ -1,2 +1,2 @@
 # ts_engine
-Game engine i was writting in es6 but then got iffy and changed it to Typescript.
+Game engine I was writing in es6 but then got iffy and changed it to Typescript.
