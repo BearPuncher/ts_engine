@@ -1,6 +1,10 @@
+import * as _Actors from './lib/base_actor';
+export {_Actors as Actor};
 import _AssetLoader from './lib/utils/asset_loader';
 export {_AssetLoader as AssetLoader};
 import _Controller from './lib/utils/controller';
-export {_Controller  as Controller};
+export {_Controller as Controller};
+import _Sprite from './lib/sprite';
+export {_Sprite as Sprite};
 import _Timer from './lib/utils/timer';
 export {_Timer as Timer};

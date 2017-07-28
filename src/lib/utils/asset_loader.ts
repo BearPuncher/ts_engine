@@ -12,7 +12,7 @@ export default class AssetLoader {
 
     private numOfImages: number;
     private numComplete: number;
-    private images: { [key:string]: HTMLImageElement };
+    private images: { [key: string]: HTMLImageElement };
 
     /**
      * Constructor.
@@ -36,8 +36,8 @@ export default class AssetLoader {
      */
     public loadImage(key: string, src: string) {
         this.numOfImages++;
-        let downloadingImage = new Image();
-        downloadingImage.onload = function() {
+        const downloadingImage = new Image();
+        downloadingImage.onload = () => {
             AssetLoader.instance.images[key] = downloadingImage;
             AssetLoader.instance.numComplete++;
         };
@@ -50,7 +50,7 @@ export default class AssetLoader {
      * @returns {Image}
      */
     public getImage(key: string): HTMLImageElement {
-        let image = this.images[key];
+        const image = this.images[key];
         if (image instanceof Image) {
             return image;
         }

@@ -7,14 +7,14 @@ export default class Controller {
     /**
      * Key map.
      */
-    public static keys: { [key:string]: number } ;
+    public static keys: { [key: string]: number } ;
 
     /**
      * The singleton instance.
      */
     private static instance: Controller;
 
-    private pressed: { [key:number]: boolean };
+    private pressed: { [key: number]: boolean };
 
     /**
      * Constructor.
@@ -27,24 +27,24 @@ export default class Controller {
 
         this.pressed = {};
 
-        document.addEventListener('keyup', function (event: KeyboardEvent){
+        document.addEventListener('keyup', (event: KeyboardEvent) => {
             Controller.instance.pressed[event.keyCode] = false;
         }, true);
 
-        document.addEventListener('keydown', function (event: KeyboardEvent){
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
             Controller.instance.pressed[event.keyCode] = true;
         }, true);
 
         Controller.keys = {
+            A: 65,
+            D: 68,
+            DOWN: 40,
             ENTER: 13,
             LEFT: 37,
             RIGHT: 39,
-            UP: 38,
-            DOWN: 40,
-            A: 65,
-            D: 68,
-            W: 87,
             S: 83,
+            UP: 38,
+            W: 87,
         };
         Controller.instance = this;
     }
@@ -54,10 +54,10 @@ export default class Controller {
      * @param keyCode the keycode for the key
      * @returns true if button is pressed
      */
-    isPressed(keyCode: number): boolean {
-        let press = this.pressed[keyCode];
+    public isPressed(keyCode: number): boolean {
+        const press = this.pressed[keyCode];
 
-        if (typeof(press) === "boolean") {
+        if (typeof(press) === 'boolean') {
             return press;
         }
         return false;
