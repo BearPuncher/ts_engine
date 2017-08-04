@@ -1,6 +1,9 @@
 /**
  * Created by daniel on 7/21/17.
  */
+
+const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+
 module.exports = {
     entry: {
         example: "./src/example.tsx",
@@ -11,6 +14,10 @@ module.exports = {
         filename: "[name].bundle.js",
         path: __dirname + "/dist",
     },
+
+    plugins: [
+        new TypedocWebpackPlugin({})
+    ],
 
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",

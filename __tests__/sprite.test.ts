@@ -1,5 +1,3 @@
-'use strict';
-
 import Sprite from '../src/lib/sprite';
 import {Point} from '../src/lib/utils/math';
 

@@ -21,10 +21,10 @@ export default class Sprite {
      * @param width sprite width
      * @param height sprite height, defaults to width
      */
-    constructor(image: HTMLImageElement, width: number, height: number = width) {
+    constructor(image: HTMLImageElement, width: number, height?: number) {
         this.image = image;
         this.width = width;
-        this.height = height;
+        this.height = (height) ? height : width;
         this.scale = {x: 1, y: 1};
         this.frame = 0;
     }
@@ -34,7 +34,7 @@ export default class Sprite {
      * @param cycle the cycle to display, as an array of pairs
      * @param interval the interval between frames (ms)
      */
-    public setCycle(cycle: [[number, number]], interval: number) {
+    public setCycle(cycle: [[number, number]], interval: number): void {
         this.cycle = cycle;
         this.interval = interval;
         this.frame = 0;
@@ -46,7 +46,7 @@ export default class Sprite {
      * @param scaleX the scale value for the X axis
      * @param scaleY the scale value for the Y axis
      */
-    public setScale(scaleX: number, scaleY?: number) {
+    public setScale(scaleX: number, scaleY?: number): void {
         this.scale = {x: scaleX, y: (scaleY) ? scaleY : scaleX};
     }
 
@@ -54,7 +54,7 @@ export default class Sprite {
      * Update the current frame of the sprite
      * @param step the amount to advance the timer
      */
-    public updateFrame(step: number) {
+    public updateFrame(step: number): void {
         this.timer.tick(step);
         if (this.timer.hasEnded()) {
             this.frame = (this.frame + 1) % this.cycle.length;
@@ -68,7 +68,7 @@ export default class Sprite {
      * @param ctx canvas context
      * @param opacity the opacity (between 0 - 1)
      */
-    public draw(point: Point, ctx: CanvasRenderingContext2D, opacity?: number) {
+    public draw(point: Point, ctx: CanvasRenderingContext2D, opacity?: number): void {
         const framePositions = this.cycle[this.frame];
         const dx = framePositions[0] * this.width;
         const dy = framePositions[1] * this.height;
