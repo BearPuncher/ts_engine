@@ -25,26 +25,24 @@
   "author": "Daniel Jeffery",
   "license": "MIT",
   "dependencies": {
-    "@types/jsdom": "^11.0.1",
-    "@types/react": "^15.0.38",
-    "@types/react-dom": "^15.5.1",
-    "coveralls": "^2.13.1",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "typedoc": "^0.7.2"
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "@types/jest": "^20.0.5",
+    "@types/jsdom": "^11.0.1",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^15.5.2",
     "awesome-typescript-loader": "^3.2.1",
+    "coveralls": "^2.13.1",
     "jest": "^20.0.4",
     "jsdom": "^11.1.0",
-    "react-addons-test-utils": "^15.6.0",
     "source-map-loader": "^0.2.1",
     "ts-jest": "^20.0.7",
     "tslint": "^5.5.0",
     "tslint-eslint-rules": "^4.1.1",
     "tslint-loader": "^3.5.3",
-    "typedoc": "^0.7.1",
+    "typedoc": "^0.8.0",
     "typedoc-webpack-plugin": "^1.1.4",
     "typescript": "^2.4.2"
   }

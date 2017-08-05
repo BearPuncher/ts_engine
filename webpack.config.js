@@ -16,7 +16,9 @@ module.exports = {
     },
 
     plugins: [
-        new TypedocWebpackPlugin({})
+        new TypedocWebpackPlugin({
+            out: __dirname + "/docs",
+            }, './src/lib')
     ],
 
     // Enable sourcemaps for debugging webpack's output.
