@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Button, ButtonGroup} from 'react-bootstrap';
-import Player from '../game/player';
+import Player from '../example/player';
 import {Actor, AssetLoader, Controller, Engine, PreloaderStage, Sprite, Stage} from '../lib';
 
 const CANVAS_ID: string = 'canvas';

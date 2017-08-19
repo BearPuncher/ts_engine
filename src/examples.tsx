@@ -4,9 +4,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Game from './components/Game';
+import Game from './components/Examples';
 
 ReactDOM.render(
-    <Game title="THE GAME"/>,
+    <Game title="THE EXAMPLES"/>,
     document.getElementById('app'),
 );

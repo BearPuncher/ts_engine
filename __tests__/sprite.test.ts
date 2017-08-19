@@ -1,7 +1,7 @@
 import Sprite from '../src/lib/sprite';
-import {Point} from '../src/lib/utils/math';
+import {IPoint} from '../src/lib/utils/math';
 
-const WIDTH = 20, HEIGHT = 40, INTERVAL = 20, CYCLE: [[number, number]] = [[0,0],[0,1]], POINT: Point = {x: 5, y: 10};
+const WIDTH = 20, HEIGHT = 40, INTERVAL = 20, CYCLE: [[number, number]] = [[0,0],[0,1]], POINT: IPoint = {x: 5, y: 10};
 
 const ImageMock = jest.fn<HTMLImageElement>();
 const IMAGE: HTMLImageElement = new ImageMock();

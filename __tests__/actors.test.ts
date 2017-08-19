@@ -4,22 +4,23 @@
 
 import RectActor from '../src/lib/actors/rect_actor';
 import CircleActor from '../src/lib/actors/circle_actor';
-import {Point} from "../src/lib/utils/math";
+import {IPoint} from "../src/lib/utils/math";
 import Stage from "../src/lib/stage";
 import Sprite from "../src/lib/sprite";
 
-const ORIGIN: Point = {x: 10, y: 5}, LAYER = 15, OPACITY = 0.4, STEP = 16;
+const ORIGIN: IPoint = {x: 10, y: 5}, LAYER = 15, OPACITY = 0.4, STEP = 16;
 
 // Mocks
 const CtxMock = jest.fn<CanvasRenderingContext2D>();
 const CTX: CanvasRenderingContext2D = new CtxMock();
+CTX.strokeRect = jest.fn();
 CTX.fillRect = jest.fn();
 CTX.beginPath = jest.fn();
 CTX.arc = jest.fn();
 CTX.fill = jest.fn();
 
-const CanvastMock = jest.fn<HTMLCanvasElement>();
-const CANVAS: HTMLCanvasElement = new CanvastMock();
+const CanvasMock = jest.fn<HTMLCanvasElement>();
+const CANVAS: HTMLCanvasElement = new CanvasMock();
 CANVAS.getContext = jest.fn(() => {
     return CTX;
 });
@@ -27,7 +28,7 @@ CANVAS.getContext = jest.fn(() => {
 const STAGE: Stage = jest.genMockFromModule('../src/lib/stage');
 STAGE.ctx = CTX;
 
-const SPRITE: Sprite = jest.genMockFromModule('../src/lib/sprite')
+const SPRITE: Sprite = jest.genMockFromModule('../src/lib/sprite');
 SPRITE.updateFrame = jest.fn();
 SPRITE.draw = jest.fn();
 

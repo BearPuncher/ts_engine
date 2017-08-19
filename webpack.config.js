@@ -6,8 +6,8 @@ const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
 
 module.exports = {
     entry: {
-        example: "./src/example.tsx",
-        engine: "./src/index.ts",
+        examples: "./src/examples.tsx",
+        ts_engine: "./src/lib.ts",
     },
 
     output: {
