@@ -1,7 +1,7 @@
 import {Actor} from './actors/abstract_actor';
 
 /**
- * A stage, which can be rendered.
+ * A currentStage, which can be rendered.
  */
 export default class Stage {
     public width: number;
@@ -11,9 +11,9 @@ export default class Stage {
     private actors: Actor[];
 
     /**
-     * Basic constructor taking stage width and height.
-     * @param width {number} - The stage width.
-     * @param height {number} - The stage height.
+     * Basic constructor taking currentStage width and height.
+     * @param width {number} - The currentStage width.
+     * @param height {number} - The currentStage height.
      */
     constructor(width: number, height: number) {
         this.width = width;
@@ -24,7 +24,7 @@ export default class Stage {
     }
 
     /**
-     * Add an actor to the stage.
+     * Add an actor to the currentStage, and initialises it.
      * @param actor {Actor} - The actor to add.
      */
     public addActor(actor: Actor) {
@@ -35,7 +35,7 @@ export default class Stage {
     }
 
     /**
-     * Initialize the stage. Can be overridden.
+     * Initialize the currentStage. Can be overridden.
      */
     public init() {
         // Override
@@ -43,7 +43,7 @@ export default class Stage {
     }
 
     /**
-     * Update the stage. Can be overridden.
+     * Update the currentStage. Can be overridden.
      * @param step {number} - The number of steps to update for.
      */
     public update(step: number) {
@@ -55,7 +55,7 @@ export default class Stage {
     }
 
     /**
-     * Render the stage. Can be overridden.
+     * Render the currentStage. Can be overridden.
      */
     public render() {
         // Iterate over all actors and render

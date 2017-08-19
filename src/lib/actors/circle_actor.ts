@@ -1,4 +1,4 @@
-import {Point} from '../utils/math';
+import {IPoint} from '../utils/math';
 import {Actor, IActorOptions} from './abstract_actor';
 
 /**
@@ -11,12 +11,12 @@ export default class CircleActor extends Actor {
     /**
      * Constructor.
      * @param origin the Point of origin
-     * @param r the radius of the circle
+     * @param radius the radius of the circle
      * @param options the actor options
      */
-    constructor(origin: Point, r: number, options: IActorOptions = {}) {
+    constructor(origin: IPoint, radius: number, options: IActorOptions = {}) {
         super(origin, options);
-        this.radius = r;
+        this.radius = radius;
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Point} from '../utils/math';
+import {IPoint} from '../utils/math';
 import {Actor, IActorOptions} from './abstract_actor';
 
 /**
@@ -12,14 +12,14 @@ export default class RectActor extends Actor {
     /**
      * Constructor.
      * @param origin Point of origin
-     * @param w the width
-     * @param h the height
+     * @param width the width
+     * @param height the height
      * @param options the actor options.
      */
-    constructor(origin: Point, w: number, h: number, options: IActorOptions = {}) {
+    constructor(origin: IPoint, width: number, height: number, options: IActorOptions = {}) {
         super(origin, options);
-        this.width = w;
-        this.height = h;
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -33,6 +33,6 @@ export default class RectActor extends Actor {
      * @inheritDoc
      */
     protected drawDebug() {
-        this.stage.ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        this.stage.ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
     }
 }

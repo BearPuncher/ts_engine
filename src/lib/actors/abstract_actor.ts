@@ -1,6 +1,6 @@
 import Sprite from '../sprite';
 import Stage from '../stage';
-import {Point} from '../utils/math';
+import {IPoint} from '../utils/math';
 
 /**
  * Options for actor.
@@ -24,7 +24,7 @@ export interface ISpriteOptions {
  */
 export abstract class Actor {
 
-    public position: Point;
+    public position: IPoint;
     public layer: number;
     public stage: Stage;
     public sprite: Sprite;
@@ -36,7 +36,7 @@ export abstract class Actor {
      * @param origin the start position
      * @param options additional options
      */
-    constructor(origin: Point, options: IActorOptions) {
+    constructor(origin: IPoint, options: IActorOptions) {
         this.position = origin;
         this.layer = (options.layer) ? options.layer : 0;
         this.stage = (options.stage) ? options.stage : null;
@@ -74,7 +74,7 @@ export abstract class Actor {
      */
     public render(): void {
         if (this.sprite) {
-            const point: Point = {
+            const point: IPoint = {
                 x: this.position.x + this.spriteOffset.x,
                 y: this.position.y + this.spriteOffset.y,
             };

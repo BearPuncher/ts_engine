@@ -1,4 +1,4 @@
-import {Point} from './utils/math';
+import {IPoint} from './utils/math';
 import Timer from './utils/timer';
 
 /**
@@ -68,7 +68,7 @@ export default class Sprite {
      * @param ctx canvas context
      * @param opacity the opacity (between 0 - 1)
      */
-    public draw(point: Point, ctx: CanvasRenderingContext2D, opacity?: number): void {
+    public draw(point: IPoint, ctx: CanvasRenderingContext2D, opacity?: number): void {
         const framePositions = this.cycle[this.frame];
         const dx = framePositions[0] * this.width;
         const dy = framePositions[1] * this.height;
