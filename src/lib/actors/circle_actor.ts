@@ -32,6 +32,7 @@ export default class CircleActor extends Actor {
     protected drawDebug() {
         const ctx = this.stage.ctx;
         ctx.beginPath();
+        ctx.fillStyle = this.debugColour;
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
     }

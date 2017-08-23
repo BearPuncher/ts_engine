@@ -8,6 +8,7 @@ import {IPoint} from '../utils/math';
 export interface IActorOptions {
     readonly layer?: number;
     readonly stage?: Stage;
+    readonly debugColour?: string;
 }
 
 /**
@@ -30,6 +31,7 @@ export abstract class Actor {
     public sprite: Sprite;
     public spriteOffset: {x: number, y: number};
     public opacity: number;
+    protected debugColour: string;
 
     /**
      * Constructor.
@@ -40,6 +42,7 @@ export abstract class Actor {
         this.position = origin;
         this.layer = (options.layer) ? options.layer : 0;
         this.stage = (options.stage) ? options.stage : null;
+        this.debugColour = (options.debugColour) ? options.debugColour : 'black';
         this.sprite = null;
         this.spriteOffset = {x: 0, y: 0};
         this.opacity = 1;

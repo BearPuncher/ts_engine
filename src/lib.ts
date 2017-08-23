@@ -23,3 +23,5 @@ import _PreloaderStage from './lib/preloader_stage';
 export {_PreloaderStage as PreloaderStage};
 import _Engine from './lib/engine';
 export {_Engine as Engine};
+import _TileMap from './lib/tile_map';
+export {_TileMap as TileMap};
