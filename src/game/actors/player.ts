@@ -9,7 +9,7 @@ export default class Player extends TSE.CircleActor {
      * Ovveride.
      */
     public init(): void {
-        this.debugColour = 'red';
+        this.debugColour = 'orange';
     }
 
     /**

@@ -8,7 +8,7 @@ export default class TileMap {
     public rows: number;
     public cols: number;
     public tileSize: number;
-    private tiles: any[];
+    public tiles: any[];
 
     /**
      * Constructor.
@@ -53,13 +53,21 @@ export default class TileMap {
      */
     public drawDebug(ctx: CanvasRenderingContext2D): void {
         ctx.save();
-        ctx.strokeStyle = 'black';
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.cols; j++) {
                 const x = j * this.tileSize;
                 const y = i * this.tileSize;
+                const tile: number = this.getTile(i, j);
+                if (tile === 0) {
+                    ctx.strokeStyle = 'white';
+                } else if (tile === 1) {
+                    ctx.strokeStyle = 'blue';
+                } else if (tile >= 2) {
+                    ctx.strokeStyle = 'black';
+                }
                 ctx.strokeRect(x, y, this.tileSize, this.tileSize);
+
             }
         }
 
