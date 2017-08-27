@@ -1,3 +1,4 @@
+import * as TSE from '../../lib';
 import TileMap from '../../lib/tile_map';
 
 export const TileLayouts = {
@@ -37,12 +38,14 @@ export class MazePart {
     public length: number;
     public diameter: number;
     public direction: number;
+    public hovered: boolean;
 
     constructor(tilesLayout: number[]) {
         this.length = 128;
         this.diameter = 4;
         this.direction = 0;
         this.tilesLayout = new TileMap(this.diameter, this.diameter, this.length / this.diameter, tilesLayout);
+        this.hovered = false;
     }
 
     public rotateRight(): void {
@@ -71,7 +74,7 @@ export class MazePart {
         this.tilesLayout.tiles = newTiles;
     }
 
-    public drawDebug(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D): void {
+    public render(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D): void {
         ctx.save();
         ctx.translate(xOffset, yOffset);
         for (let row = 0; row < this.diameter; row++) {
@@ -91,6 +94,11 @@ export class MazePart {
                 const y: number = tileSize * row;
                 ctx.fillRect(x, y, this.tilesLayout.tileSize, this.tilesLayout.tileSize);
             }
+        }
+        if (this.hovered) {
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'orange';
+            ctx.strokeRect(0, 0, this.length, this.length);
         }
         ctx.restore();
     }

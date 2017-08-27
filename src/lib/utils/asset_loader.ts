@@ -70,6 +70,9 @@ export default class AssetLoader {
      * @returns {boolean} true if loading is done.
      */
     public loadingIsCompleted(): boolean {
+        if (this.numOfImages === 0) {
+            return true;
+        }
         return this.getProgress() === 1;
     }
 }

@@ -6,14 +6,14 @@ import {MazePart} from './maze_part';
  */
 export default class Maze extends TSE.RectActor {
 
+    public needsUpdate: boolean;
     private mazePartMap: MazePart[][];
+    private mazePartSize: number;
     private tileMap: TSE.TileMap;
-    private tileSize: number;
-    private needsUpdate: boolean;
 
-    constructor(origin: TSE.Math.IPoint, width: number, height: number, tileSize: number) {
+    constructor(origin: TSE.Math.IPoint, width: number, height: number, mazePartSize: number) {
         super(origin, width, height, {layer: 0});
-        this.tileSize = tileSize;
+        this.mazePartSize = mazePartSize;
         this.mazePartMap = [];
         this.needsUpdate = true;
     }
@@ -68,8 +68,9 @@ export default class Maze extends TSE.RectActor {
      * Override.
      */
     public init() {
-        const cols: number = this.width / this.tileSize;
-        const rows: number = this.height / this.tileSize;
+        const tileSize: number = 32;
+        const cols: number = this.width / tileSize;
+        const rows: number = this.height / tileSize;
 
         const tiles = new Array<number>(rows * cols);
         for (let i = 0; i < rows; i++) {
@@ -78,7 +79,7 @@ export default class Maze extends TSE.RectActor {
             }
         }
 
-        this.tileMap = new TSE.TileMap(rows, cols, this.tileSize, tiles);
+        this.tileMap = new TSE.TileMap(rows, cols, tileSize, tiles);
     }
 
     /**
@@ -90,6 +91,12 @@ export default class Maze extends TSE.RectActor {
             this.updateTileMapWithMazeParts();
             this.needsUpdate = false;
         }
+        for (let row = 0; row < this.mazePartMap.length; row++) {
+            for (let col = 0; col < this.mazePartMap[row].length; col++) {
+                this.mazePartMap[row][col].hovered = false;
+            }
+        }
+
     }
 
     /**
@@ -102,11 +109,18 @@ export default class Maze extends TSE.RectActor {
             for (let col = 0; col < this.mazePartMap[row].length; col++) {
                 // copy tilelayout to tilemap
                 const length: number = this.mazePartMap[row][col].length;
-                this.mazePartMap[row][col].drawDebug(col * length, row * length, this.stage.ctx);
+                this.mazePartMap[row][col].render(col * length, row * length, this.stage.ctx);
             }
         }
 
-        this.tileMap.drawDebug(this.stage.ctx);
+        //this.tileMap.render(this.stage.ctx);
+    }
+
+    public getMazePart(position: TSE.Math.IPoint) {
+        const currentRow: number = Math.floor(position.y / this.mazePartSize);
+        const currentCol: number = Math.floor(position.x / this.mazePartSize);
+
+        return this.mazePartMap[currentRow][currentCol];
     }
 
     private updateTileMapWithMazeParts(): void {
@@ -121,9 +135,8 @@ export default class Maze extends TSE.RectActor {
                             col * mazePart.diameter + innerCol, tile);
                     }
                 }
-                const x: number = mazePart.length * this.tileSize;
-                const y: number = mazePart.length * this.tileSize;
             }
         }
     }
+
 }

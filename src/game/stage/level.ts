@@ -65,8 +65,7 @@ export default class Level extends TSE.Stage {
      * Override.
      */
     public init() {
-        const tileSize: number = 32;
-        this.maze = new Maze(TSE.Math.ORIGIN, 640, 640, tileSize);
+        this.maze = new Maze(TSE.Math.ORIGIN, 640, 640, 128);
         this.maze.setMazeParts(MAZE_PARTS);
         super.addActor(this.maze);
 
@@ -79,6 +78,12 @@ export default class Level extends TSE.Stage {
 
     public update(step: number): void {
         super.update(step);
+
+        const pos: TSE.Math.IPoint = this.getMousePosition();
+        if (pos) {
+            const selectedMazePart: MazePart = this.maze.getMazePart(pos);
+            selectedMazePart.hovered = true;
+        }
     }
 
     /**
@@ -106,6 +111,9 @@ export default class Level extends TSE.Stage {
     }
 
     private getMousePosition(): TSE.Math.IPoint {
+        if (!this.player.mousePosition) {
+            return null;
+        }
         return {x: this.player.mousePosition.x - this.camera.x,
             y: this.player.mousePosition.y - this.camera.y};
     }
