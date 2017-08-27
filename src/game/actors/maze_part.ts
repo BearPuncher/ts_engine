@@ -9,6 +9,10 @@ export const TileLayouts = {
         1, 1, 1, 1,
         1, 1, 1, 1,
         0, 1, 1, 0],
+    DEAD_END: [0, 1, 1, 0,
+        0, 1, 1, 0,
+        0, 1, 1, 0,
+        0, 0, 0, 0],
     DOUBLE_CORNER: [ 0, 1, 1, 0,
         1, 3, 3, 2,
         1, 3, 3, 2,
@@ -32,14 +36,17 @@ export class MazePart {
     public tilesLayout: TileMap;
     public length: number;
     public diameter: number;
+    public direction: number;
 
     constructor(tilesLayout: number[]) {
         this.length = 128;
         this.diameter = 4;
+        this.direction = 0;
         this.tilesLayout = new TileMap(this.diameter, this.diameter, this.length / this.diameter, tilesLayout);
     }
 
     public rotateRight(): void {
+        this.direction = (this.direction + 90) % 360;
         const newTiles: number[] = [];
 
         for (let row = 0; row < this.diameter; row++) {
@@ -52,6 +59,7 @@ export class MazePart {
     }
 
     public rotateLeft(): void {
+        this.direction = (this.direction - 90) % 360;
         const newTiles: number[] = [];
 
         for (let row = 0; row < this.diameter; row++) {
@@ -91,6 +99,7 @@ export class MazePart {
 export enum MazePartType {
     CORNER,
     CROSS,
+    DEAD_END,
     DOUBLE_CORNER,
     STRAIGHT,
     T_BONE,
@@ -104,6 +113,8 @@ export const MazePartFactory = {
                 return new MazePart(TileLayouts.STRAIGHT);
             case MazePartType.CORNER:
                 return new MazePart(TileLayouts.CORNER);
+            case MazePartType.DEAD_END:
+                return new MazePart(TileLayouts.DEAD_END);
             case MazePartType.T_BONE:
                 return new MazePart(TileLayouts.T_BONE);
             case MazePartType.CROSS:

@@ -1,5 +1,6 @@
 import * as TSE from '../../lib';
 import {MazePart} from './maze_part';
+import RectActor from "../../lib/actors/rect_actor";
 
 /**
  * The maze.
@@ -20,6 +21,43 @@ export default class Maze extends TSE.RectActor {
 
     public setMazeParts(mazePartMap: MazePart[][]) {
         this.mazePartMap = mazePartMap;
+    }
+
+    // http://jonathanwhiting.com/tutorial/collision/
+    public isRectActorColliding(actor: RectActor): boolean {
+        const tilemapTileSize = this.tileMap.tileSize;
+        let leftTile: number = Math.floor(actor.position.x / tilemapTileSize);
+        let rightTile: number = Math.floor((actor.position.x + actor.width) / tilemapTileSize);
+        let topTile: number = Math.floor(actor.position.y / tilemapTileSize);
+        let bottomTile: number = Math.floor((actor.position.y + actor.height) / tilemapTileSize);
+
+        if(leftTile < 0) {
+            leftTile = 0;
+        }
+
+        if (rightTile > this.tileMap.cols) {
+            rightTile = this.tileMap.cols;
+        }
+
+        if(topTile < 0) {
+            topTile = 0;
+        }
+
+        if(bottomTile > this.tileMap.rows) {
+            bottomTile = this.tileMap.rows;
+        }
+
+        //let anyCollision: boolean = false
+        for(let i = leftTile; i <= rightTile; i++) {
+            for(let j = topTile; j <= bottomTile; j++) {
+                let tile = this.tileMap.getTile(j, i);
+                if(tile === 0) {
+                    return true
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -84,4 +122,6 @@ export default class Maze extends TSE.RectActor {
             }
         }
     }
+
+
 }

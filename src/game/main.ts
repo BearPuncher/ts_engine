@@ -1,5 +1,5 @@
 import * as TSE from '../lib';
-import LevelOneStage from './stage/level_one';
+import Level from './stage/level';
 
 const WIDTH: number = 640;
 const HEIGHT: number = 480;
@@ -23,7 +23,7 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
 }
 
 function initLevelOne(): void {
-    const levelOne: LevelOneStage = new LevelOneStage(WIDTH, HEIGHT);
+    const levelOne: Level = new Level(WIDTH, HEIGHT);
     ENGINE.setStage(levelOne);
 }
 
