@@ -18,11 +18,16 @@ enum MoveDirection {
  */
 export default class Player extends TSE.RectActor {
 
-    private oldPosition: IPoint;
     public maze: Maze;
+    public mousePosition: IPoint;
+    private oldPosition: IPoint;
 
     public init(): void {
         this.debugColour = 'orange';
+        this.stage.ctx.canvas.addEventListener('mousemove', (event: MouseEvent) => {
+            const rect = this.stage.ctx.canvas.getBoundingClientRect();
+            this.mousePosition = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+        }, true);
     }
 
     // TODO: implement sliding

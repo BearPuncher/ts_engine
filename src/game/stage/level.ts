@@ -2,7 +2,6 @@ import * as TSE from '../../lib';
 import Maze from '../actors/maze';
 import {MazePart, MazePartFactory, MazePartType} from '../actors/maze_part';
 import Player from '../actors/player';
-import {IPoint} from "../../lib/utils/math";
 
 const MAZE_PARTS: MazePart[][] = [];
 MAZE_PARTS[0] = [];
@@ -60,6 +59,7 @@ export default class Level extends TSE.Stage {
 
     private maze: Maze;
     private player: Player;
+    private camera: TSE.Math.IPoint;
 
     /**
      * Override.
@@ -85,12 +85,13 @@ export default class Level extends TSE.Stage {
      * Override.
      */
     public render(): void {
-        let camera: IPoint = this.player.position;
         const ctx: CanvasRenderingContext2D = this.ctx;
         ctx.save();
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, this.width, this.height);
 
-        let cameraX: number = - camera.x + this.width / 2;
-        let cameraY: number = - camera.y + this.height / 2;
+        let cameraX: number = - this.player.position.x + this.width / 2;
+        let cameraY: number = - this.player.position.y + this.height / 2;
 
         // Clamp camera to puzzle area
         cameraX = Math.min(0, cameraX);
@@ -99,7 +100,13 @@ export default class Level extends TSE.Stage {
         cameraY = Math.max(cameraY, - this.maze.height + this.height);
 
         ctx.translate(cameraX, cameraY);
+        this.camera = {x: cameraX, y: cameraY};
         super.render();
         ctx.restore();
+    }
+
+    private getMousePosition(): TSE.Math.IPoint {
+        return {x: this.player.mousePosition.x - this.camera.x,
+            y: this.player.mousePosition.y - this.camera.y};
     }
 }

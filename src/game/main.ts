@@ -8,7 +8,6 @@ const LOADER: TSE.AssetLoader = new TSE.AssetLoader();
 
 function setupEngine(width: number, height: number, canvasId: string): TSE.Engine {
     const engine = new TSE.Engine(width, height, document.getElementById(canvasId));
-    LOADER.loadImage('sprite', 'assets/images/garota.png');
 
     const preloadStage: TSE.PreloaderStage = new TSE.PreloaderStage(width, height);
     engine.setStage(preloadStage);
