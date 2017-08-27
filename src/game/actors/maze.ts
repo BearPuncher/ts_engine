@@ -25,6 +25,12 @@ export default class Maze extends TSE.RectActor {
 
     // http://jonathanwhiting.com/tutorial/collision/
     public isRectActorColliding(actor: RectActor): boolean {
+
+        if (actor.position.x < 0 || actor.position.x + actor.width > this.width ||
+            actor.position.y < 0 || actor.position.y + actor.height > this.height) {
+            return true;
+        }
+
         const tilemapTileSize = this.tileMap.tileSize;
         let leftTile: number = Math.floor(actor.position.x / tilemapTileSize);
         let rightTile: number = Math.floor((actor.position.x + actor.width) / tilemapTileSize);
