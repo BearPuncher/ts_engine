@@ -20,20 +20,35 @@ export default class Player extends TSE.RectActor {
 
     public maze: Maze;
     public mousePosition: IPoint;
+    public clicked: {left: boolean, right: boolean};
     private oldPosition: IPoint;
 
     public init(): void {
+        this.clicked = null;
         this.debugColour = 'orange';
-        this.stage.ctx.canvas.addEventListener('mousemove', (event: MouseEvent) => {
+        const canvas: HTMLCanvasElement = this.stage.ctx.canvas;
+        // Update mouse position
+        canvas.addEventListener('mousemove', (event: MouseEvent) => {
             const rect = this.stage.ctx.canvas.getBoundingClientRect();
             this.mousePosition = {x: event.clientX - rect.left, y: event.clientY - rect.top};
         }, true);
+        // Capture click
+        canvas.addEventListener('mousedown', (event: MouseEvent) => {
+            event.preventDefault();
+            const rect = this.stage.ctx.canvas.getBoundingClientRect();
+            this.mousePosition = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            this.clicked = {left: event.button === 0, right: event.button === 2};
+        }, true);
+        // Prevent right click menu
+        canvas.oncontextmenu = (event) => {
+            event.preventDefault();
+        };
     }
 
-    // TODO: implement sliding
-    public update(step: number) {
+    public update(step: number): void {
         super.update(step);
         this.doMove(step);
+        this.clicked = null;
     }
 
     protected drawDebug(): void {

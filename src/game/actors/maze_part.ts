@@ -39,6 +39,7 @@ export class MazePart {
     public diameter: number;
     public direction: number;
     public hovered: boolean;
+    public rotates: boolean;
 
     constructor(tilesLayout: number[]) {
         this.length = 128;
@@ -46,9 +47,13 @@ export class MazePart {
         this.direction = 0;
         this.tilesLayout = new TileMap(this.diameter, this.diameter, this.length / this.diameter, tilesLayout);
         this.hovered = false;
+        this.rotates = true;
     }
 
     public rotateRight(): void {
+        if (!this.rotates) {
+            return;
+        }
         this.direction = (this.direction + 90) % 360;
         const newTiles: number[] = [];
 
@@ -62,6 +67,9 @@ export class MazePart {
     }
 
     public rotateLeft(): void {
+        if (!this.rotates) {
+            return;
+        }
         this.direction = (this.direction - 90) % 360;
         const newTiles: number[] = [];
 
@@ -95,9 +103,9 @@ export class MazePart {
                 ctx.fillRect(x, y, this.tilesLayout.tileSize, this.tilesLayout.tileSize);
             }
         }
-        if (this.hovered) {
+        if (this.hovered && this.rotates) {
             ctx.lineWidth = 4;
-            ctx.strokeStyle = 'orange';
+            ctx.strokeStyle = 'red';
             ctx.strokeRect(0, 0, this.length, this.length);
         }
         ctx.restore();
@@ -115,24 +123,37 @@ export enum MazePartType {
 }
 
 export const MazePartFactory = {
-    createMazePart: (type: MazePartType): MazePart => {
+    createMazePart: (type: MazePartType, rotate: number, canRotate: boolean): MazePart => {
+        let mazepart: MazePart;
         switch (type) {
             case MazePartType.STRAIGHT:
-                return new MazePart(TileLayouts.STRAIGHT);
+                mazepart = new MazePart(TileLayouts.STRAIGHT);
+                break;
             case MazePartType.CORNER:
-                return new MazePart(TileLayouts.CORNER);
+                mazepart = new MazePart(TileLayouts.CORNER);
+                break;
             case MazePartType.DEAD_END:
-                return new MazePart(TileLayouts.DEAD_END);
+                mazepart = new MazePart(TileLayouts.DEAD_END);
+                break;
             case MazePartType.T_BONE:
-                return new MazePart(TileLayouts.T_BONE);
+                mazepart = new MazePart(TileLayouts.T_BONE);
+                break;
             case MazePartType.CROSS:
-                return new MazePart(TileLayouts.CROSS);
+                mazepart = new MazePart(TileLayouts.CROSS);
+                break;
             case MazePartType.OVERPASS:
-                return new MazePart(TileLayouts.OVERPASS);
+                mazepart = new MazePart(TileLayouts.OVERPASS);
+                break;
             case MazePartType.DOUBLE_CORNER:
-                return new MazePart(TileLayouts.DOUBLE_CORNER);
+                mazepart = new MazePart(TileLayouts.DOUBLE_CORNER);
+                break;
             default:
                 throw Error('No matching type for: ' + type);
         }
+        for (let i = 0; i < rotate; i++) {
+            mazepart.rotateRight();
+        }
+        mazepart.rotates = canRotate;
+        return mazepart;
     },
 };

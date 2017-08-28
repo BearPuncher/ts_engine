@@ -27,7 +27,7 @@ export default class Stage {
      * Add an actor to the currentStage, and initialises it.
      * @param actor {Actor} - The actor to add.
      */
-    public addActor(actor: Actor) {
+    public addActor(actor: Actor): void {
         actor.stage = this;
         actor.init();
 
@@ -37,7 +37,7 @@ export default class Stage {
     /**
      * Initialize the currentStage. Can be overridden.
      */
-    public init() {
+    public init(): void {
         // Override
         this.finished = false;
     }
@@ -46,7 +46,7 @@ export default class Stage {
      * Update the currentStage. Can be overridden.
      * @param step {number} - The number of steps to update for.
      */
-    public update(step: number) {
+    public update(step: number): void {
         this.sortActorsByLayer();
         // Iterate over all actors and update
         for (const actor of this.actors) {
@@ -57,7 +57,7 @@ export default class Stage {
     /**
      * Render the currentStage. Can be overridden.
      */
-    public render() {
+    public render(): void {
         // Iterate over all actors and render
         for (const actor of this.actors) {
             actor.render();

@@ -11,14 +11,14 @@ export default class Maze extends TSE.RectActor {
     private mazePartSize: number;
     private tileMap: TSE.TileMap;
 
-    constructor(origin: TSE.Math.IPoint, width: number, height: number, mazePartSize: number) {
-        super(origin, width, height, {layer: 0});
+    constructor(width: number, height: number, mazePartSize: number) {
+        super(TSE.Math.ORIGIN, width, height, {layer: 0});
         this.mazePartSize = mazePartSize;
         this.mazePartMap = [];
         this.needsUpdate = true;
     }
 
-    public setMazeParts(mazePartMap: MazePart[][]) {
+    public setMazeParts(mazePartMap: MazePart[][]): void {
         this.mazePartMap = mazePartMap;
     }
 
@@ -30,11 +30,11 @@ export default class Maze extends TSE.RectActor {
             return true;
         }
 
-        const tilemapTileSize = this.tileMap.tileSize;
-        let leftTile: number = Math.floor(actor.position.x / tilemapTileSize);
-        let rightTile: number = Math.floor((actor.position.x + actor.width) / tilemapTileSize);
-        let topTile: number = Math.floor(actor.position.y / tilemapTileSize);
-        let bottomTile: number = Math.floor((actor.position.y + actor.height) / tilemapTileSize);
+        const tileSize = this.tileMap.tileSize;
+        let leftTile: number = Math.floor(actor.position.x / tileSize);
+        let rightTile: number = Math.floor((actor.position.x + actor.width) / tileSize);
+        let topTile: number = Math.floor(actor.position.y / tileSize);
+        let bottomTile: number = Math.floor((actor.position.y + actor.height) / tileSize);
 
         if (leftTile < 0) {
             leftTile = 0;
@@ -67,7 +67,7 @@ export default class Maze extends TSE.RectActor {
     /**
      * Override.
      */
-    public init() {
+    public init(): void {
         const tileSize: number = 32;
         const cols: number = this.width / tileSize;
         const rows: number = this.height / tileSize;
@@ -104,7 +104,6 @@ export default class Maze extends TSE.RectActor {
      */
     public render(): void {
         super.render();
-
         for (let row = 0; row < this.mazePartMap.length; row++) {
             for (let col = 0; col < this.mazePartMap[row].length; col++) {
                 // copy tilelayout to tilemap
@@ -112,13 +111,18 @@ export default class Maze extends TSE.RectActor {
                 this.mazePartMap[row][col].render(col * length, row * length, this.stage.ctx);
             }
         }
-
-        //this.tileMap.render(this.stage.ctx);
     }
 
-    public getMazePart(position: TSE.Math.IPoint) {
+    public getMazePart(position: TSE.Math.IPoint): MazePart {
+        if (position.x < 0 || position.x > this.width ||
+            position.y < 0 || position.y > this.height) {
+            return null;
+        }
         const currentRow: number = Math.floor(position.y / this.mazePartSize);
         const currentCol: number = Math.floor(position.x / this.mazePartSize);
+        if (!this.mazePartMap[currentRow]) {
+            return null;
+        }
 
         return this.mazePartMap[currentRow][currentCol];
     }
