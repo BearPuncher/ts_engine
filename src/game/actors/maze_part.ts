@@ -1,40 +1,51 @@
 import * as TSE from '../../lib';
-import TileMap from '../../lib/tile_map';
 
-export const TileLayouts = {
-    CORNER: [0, 1, 1, 0,
-        0, 1, 1, 1,
-        0, 1, 1, 1,
-        0, 0, 0, 0],
-    CROSS: [0, 1, 1, 0,
-        1, 1, 1, 1,
-        1, 1, 1, 1,
-        0, 1, 1, 0],
-    DEAD_END: [0, 1, 1, 0,
-        0, 1, 1, 0,
-        0, 1, 1, 0,
-        0, 0, 0, 0],
-    DOUBLE_CORNER: [ 0, 1, 1, 0,
-        1, 3, 3, 2,
-        1, 3, 3, 2,
-        0, 2, 2, 0],
-    OVERPASS: [0, 1, 1, 0,
-        2, 3, 3, 2,
-        2, 3, 3, 2,
-        0, 1, 1, 0],
-    STRAIGHT: [0, 1, 1, 0,
-        0, 1, 1, 0,
-        0, 1, 1, 0,
-        0, 1, 1, 0],
-    T_BONE: [0, 1, 1, 0,
-        1, 1, 1, 1,
-        1, 1, 1, 1,
-        0, 0, 0, 0],
+export enum TileType {
+    WALL = 0,
+    PATH = 1,
+    RAMP = 2,
+    OVER = 3,
+}
+
+export interface MazeTile {
+    type: TileType;
+    seen: boolean;
+}
+
+const TileLayouts = {
+    CORNER: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
+    CROSS: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.PATH, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.PATH, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL],
+    DEAD_END: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
+    DOUBLE_CORNER: [ TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.PATH, TileType.OVER, TileType.OVER, TileType.RAMP,
+        TileType.PATH, TileType.OVER, TileType.OVER, TileType.RAMP,
+        TileType.WALL, TileType.RAMP, TileType.RAMP, TileType.WALL],
+    OVERPASS: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.RAMP, TileType.OVER, TileType.OVER, TileType.RAMP,
+        TileType.RAMP, TileType.OVER, TileType.OVER, TileType.RAMP,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL],
+    STRAIGHT: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL],
+    T_BONE: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.PATH, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.PATH, TileType.PATH, TileType.PATH, TileType.PATH,
+        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
 };
 
 export class MazePart {
 
-    public tilesLayout: TileMap;
+    public tilesLayout: TSE.TileMapUtils.TileMap;
     public length: number;
     public diameter: number;
     public direction: number;
@@ -45,11 +56,13 @@ export class MazePart {
         this.length = 128;
         this.diameter = 4;
         this.direction = 0;
-        this.tilesLayout = new TileMap(this.diameter, this.diameter, this.length / this.diameter, tilesLayout);
+        this.tilesLayout = new TSE.TileMapUtils.TileMap(
+            this.diameter, this.diameter, this.length / this.diameter, this.populateFromTileLayouts(tilesLayout));
         this.hovered = false;
         this.rotates = true;
     }
 
+    // TODO: move this to the tile_map class, add rotations there
     public rotateRight(): void {
         if (!this.rotates) {
             return;
@@ -87,28 +100,40 @@ export class MazePart {
         ctx.translate(xOffset, yOffset);
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
-                const tile: number = this.tilesLayout.getTile(row, col);
-                if (tile === 0) {
+                const tile: MazeTile = this.tilesLayout.getTile(row, col);
+                if (tile.type === TileType.WALL) {
                     ctx.fillStyle = 'black';
-                } else if (tile === 1) {
-                    ctx.fillStyle = 'green';
-                } else if (tile === 2) {
+                } else {
+                    ctx.fillStyle = 'LightGrey';
+                } /* else if (tile === TileType.RAMP) {
                     ctx.fillStyle = 'yellow';
-                } else if (tile === 3) {
+                } else if (tile === TileType.OVER) {
                     ctx.fillStyle = 'red';
+                }*/
+                if (tile.seen) {
+                    const tileSize: number = this.tilesLayout.tileSize;
+                    const x: number = tileSize * col;
+                    const y: number = tileSize * row;
+                    ctx.lineWidth = 1;
+                    ctx.fillRect(x, y, this.tilesLayout.tileSize, this.tilesLayout.tileSize);
                 }
-                const tileSize: number = this.tilesLayout.tileSize;
-                const x: number = tileSize * col;
-                const y: number = tileSize * row;
-                ctx.fillRect(x, y, this.tilesLayout.tileSize, this.tilesLayout.tileSize);
             }
         }
         if (this.hovered && this.rotates) {
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 1;
             ctx.strokeStyle = 'red';
             ctx.strokeRect(0, 0, this.length, this.length);
         }
+
         ctx.restore();
+    }
+
+    private populateFromTileLayouts(tilesLayout: number[]): MazeTile[] {
+        const returnArray: MazeTile[] = [];
+        for (const tile of tilesLayout) {
+            returnArray.push({type: tile, seen: false});
+        }
+        return returnArray;
     }
 }
 

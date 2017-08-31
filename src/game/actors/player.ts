@@ -1,6 +1,7 @@
 import * as TSE from '../../lib';
 import {IPoint} from '../../lib/utils/math';
 import Maze from './maze';
+import Lantern from './lantern';
 
 enum MoveDirection {
     E = 0,
@@ -18,7 +19,9 @@ enum MoveDirection {
  */
 export default class Player extends TSE.RectActor {
 
+    public lantern: Lantern;
     public maze: Maze;
+    // TODO: combine all mouse things under mouse interface.
     public mousePosition: IPoint;
     public clicked: {left: boolean, right: boolean};
     private oldPosition: IPoint;
@@ -48,7 +51,9 @@ export default class Player extends TSE.RectActor {
     public update(step: number): void {
         super.update(step);
         this.doMove(step);
+        this.maze.setAdjacentTilesSeen(this.lantern);
         this.clicked = null;
+        this.lantern.updatePosition();
     }
 
     protected drawDebug(): void {

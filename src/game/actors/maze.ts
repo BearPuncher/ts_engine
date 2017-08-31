@@ -1,5 +1,5 @@
 import * as TSE from '../../lib';
-import {MazePart} from './maze_part';
+import {MazePart, MazeTile, TileType} from './maze_part';
 
 /**
  * The maze.
@@ -9,59 +9,21 @@ export default class Maze extends TSE.RectActor {
     public needsUpdate: boolean;
     private mazePartMap: MazePart[][];
     private mazePartSize: number;
-    private tileMap: TSE.TileMap;
+    private tileMap: TSE.TileMapUtils.TileMap;
+    private rows: number;
+    private cols: number;
 
     constructor(width: number, height: number, mazePartSize: number) {
         super(TSE.Math.ORIGIN, width, height, {layer: 0});
         this.mazePartSize = mazePartSize;
+        this.rows = height / mazePartSize;
+        this.cols = width / mazePartSize;
         this.mazePartMap = [];
         this.needsUpdate = true;
     }
 
     public setMazeParts(mazePartMap: MazePart[][]): void {
         this.mazePartMap = mazePartMap;
-    }
-
-    // http://jonathanwhiting.com/tutorial/collision/
-    public isRectActorColliding(actor: TSE.RectActor): boolean {
-
-        if (actor.position.x < 0 || actor.position.x + actor.width > this.width ||
-            actor.position.y < 0 || actor.position.y + actor.height > this.height) {
-            return true;
-        }
-
-        const tileSize = this.tileMap.tileSize;
-        let leftTile: number = Math.floor(actor.position.x / tileSize);
-        let rightTile: number = Math.floor((actor.position.x + actor.width) / tileSize);
-        let topTile: number = Math.floor(actor.position.y / tileSize);
-        let bottomTile: number = Math.floor((actor.position.y + actor.height) / tileSize);
-
-        if (leftTile < 0) {
-            leftTile = 0;
-        }
-
-        if (rightTile > this.tileMap.cols) {
-            rightTile = this.tileMap.cols;
-        }
-
-        if (topTile < 0) {
-            topTile = 0;
-        }
-
-        if (bottomTile > this.tileMap.rows) {
-            bottomTile = this.tileMap.rows;
-        }
-
-        for (let i = leftTile; i <= rightTile; i++) {
-            for (let j = topTile; j <= bottomTile; j++) {
-                const tile = this.tileMap.getTile(j, i);
-                if (tile === 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -79,7 +41,7 @@ export default class Maze extends TSE.RectActor {
             }
         }
 
-        this.tileMap = new TSE.TileMap(rows, cols, tileSize, tiles);
+        this.tileMap = new TSE.TileMapUtils.TileMap(rows, cols, tileSize, tiles);
     }
 
     /**
@@ -127,6 +89,73 @@ export default class Maze extends TSE.RectActor {
         return this.mazePartMap[currentRow][currentCol];
     }
 
+    // This some hacky bullshit
+    // TODO: Fix this hacky bullcrap
+    public setAdjacentTilesSeen(actor: TSE.CircleActor): void {
+        let mostTop: number = Math.floor((actor.position.y - actor.radius) / this.mazePartSize);
+        let mostBottom: number = Math.floor((actor.position.y + actor.radius) / this.mazePartSize);
+        let mostLeft: number = Math.floor((actor.position.x - actor.radius) / this.mazePartSize);
+        let mostRight: number = Math.floor((actor.position.x + actor.radius) / this.mazePartSize);
+
+        if (mostTop < 0) {
+            mostTop = 0;
+        }
+
+        if (mostBottom > this.rows - 1) {
+            mostBottom = this.rows - 1;
+        }
+
+        if (mostLeft < 0) {
+            mostLeft = 0;
+        }
+
+        if (mostRight > this.cols - 1) {
+            mostRight = this.cols - 1;
+        }
+
+        for (let i = mostLeft; i <= mostRight; i++) {
+            for (let j = mostTop; j <= mostBottom; j++) {
+                // Reposition actor because tilemap is skewed
+                // Start of hacky bullcrap
+                // TODO: Fix this hacky bullcrap
+                const circleActor = new TSE.CircleActor({
+                    x: actor.position.x - i * this.mazePartSize,
+                    y: actor.position.y - j * this.mazePartSize,
+                }, actor.radius);
+
+                const tiles: TSE.TileMapUtils.Tile[] =
+                    this.mazePartMap[j][i].tilesLayout.getTilesAdjacentToCircleActor(circleActor);
+                for (let tile of tiles) {
+                    tile.value.seen = true;
+                }
+                // End of hacky bullcrap
+            }
+        }
+
+    }
+
+    // http://jonathanwhiting.com/tutorial/collision/
+    public isRectActorColliding(actor: TSE.RectActor): boolean {
+        if (actor.position.x < 0 || actor.position.x + actor.width > this.width ||
+            actor.position.y < 0 || actor.position.y + actor.height > this.height ) {
+            return true;
+        }
+
+        const tiles: TSE.TileMapUtils.Tile[] = this.tileMap.getTilesAdjacentToRectActor(actor);
+
+        if (tiles.length === 0) {
+            return false;
+        }
+
+        for (const tile of tiles) {
+            if (tile.value === TileType.WALL) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private updateTileMapWithMazeParts(): void {
         for (let row = 0; row < this.mazePartMap.length; row++) {
             for (let col = 0; col < this.mazePartMap[row].length; col++) {
@@ -134,9 +163,9 @@ export default class Maze extends TSE.RectActor {
                 const mazePart: MazePart = this.mazePartMap[row][col];
                 for (let innerRow = 0; innerRow < mazePart.diameter; innerRow++) {
                     for (let innerCol = 0; innerCol < mazePart.diameter; innerCol++) {
-                        const tile: number = mazePart.tilesLayout.getTile(innerRow, innerCol);
+                        const tile: MazeTile = mazePart.tilesLayout.getTile(innerRow, innerCol);
                         this.tileMap.setTile(row * mazePart.diameter + innerRow,
-                            col * mazePart.diameter + innerCol, tile);
+                            col * mazePart.diameter + innerCol, tile.type);
                     }
                 }
             }

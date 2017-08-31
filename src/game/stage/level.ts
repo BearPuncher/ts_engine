@@ -2,7 +2,10 @@ import * as TSE from '../../lib';
 import Maze from '../actors/maze';
 import {MazePart} from '../actors/maze_part';
 import Player from '../actors/player';
+import {platform} from "os";
 
+// TODO: render fog of war
+// TODO: render shadows around circle
 export abstract class Level extends TSE.Stage {
 
     protected maze: Maze;
@@ -21,8 +24,11 @@ export abstract class Level extends TSE.Stage {
     public update(step: number): void {
         const pos: TSE.Math.IPoint = this.getMousePosition();
         if (pos) {
+            // TODO: This is hacky
             const selectedMazePart: MazePart = this.maze.getMazePart(pos);
-            if (selectedMazePart) {
+            const standingOnPart: MazePart = this.maze.getMazePart(this.player.position);
+            // TODO: change cursor
+            if (selectedMazePart !== standingOnPart) {
                 if (this.player.clicked) {
                     if (this.player.clicked.left) {
                         this.maze.needsUpdate = true;
