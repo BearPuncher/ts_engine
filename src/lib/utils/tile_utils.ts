@@ -1,5 +1,4 @@
 import * as TSE from '../../lib';
-import {type} from "os";
 
 export interface Tile {
     value: any;

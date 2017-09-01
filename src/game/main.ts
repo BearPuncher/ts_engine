@@ -1,5 +1,6 @@
 import * as TSE from '../lib';
 import Level1 from './stage/level_1';
+import {EndScreen} from "./stage/end_screen";
 
 const WIDTH: number = 640;
 const HEIGHT: number = 480;
@@ -15,6 +16,8 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
     engine.setStageTransition(() => {
         if (engine.currentStage instanceof TSE.PreloaderStage) {
             initLevelOne();
+        } else if (engine.currentStage instanceof Level1) {
+            initGameOver();
         }
     });
 
@@ -22,8 +25,11 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
 }
 
 function initLevelOne(): void {
-    const levelOne: Level1 = new Level1(WIDTH, HEIGHT);
-    ENGINE.setStage(levelOne);
+    ENGINE.setStage(new Level1(WIDTH, HEIGHT));
+}
+
+function initGameOver(): void {
+    ENGINE.setStage(new EndScreen(WIDTH, HEIGHT));
 }
 
 const ENGINE: TSE.Engine = setupEngine(WIDTH, HEIGHT, CANVAS);

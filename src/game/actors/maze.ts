@@ -75,7 +75,7 @@ export default class Maze extends TSE.RectActor {
         }
     }
 
-    public getMazePart(position: TSE.Math.IPoint): MazePart {
+    public getMazePartAtPosition(position: TSE.Math.IPoint): MazePart {
         if (position.x < 0 || position.x > this.width ||
             position.y < 0 || position.y > this.height) {
             return null;
@@ -87,6 +87,17 @@ export default class Maze extends TSE.RectActor {
         }
 
         return this.mazePartMap[currentRow][currentCol];
+    }
+
+    public getTileAtPosition(position: TSE.Math.IPoint): any {
+        if (position.x < 0 || position.x > this.width ||
+            position.y < 0 || position.y > this.height) {
+            return null;
+        }
+        const currentRow: number = Math.floor(position.y / this.tileMap.tileSize);
+        const currentCol: number = Math.floor(position.x / this.tileMap.tileSize);
+
+        return this.tileMap.getTile(currentRow, currentCol);
     }
 
     // This some hacky bullshit
@@ -120,7 +131,7 @@ export default class Maze extends TSE.RectActor {
                 // TODO: Fix this hacky bullcrap
                 const circleActor = new TSE.CircleActor({
                     x: actor.position.x - i * this.mazePartSize,
-                    y: actor.position.y - j * this.mazePartSize,
+                    y: actor.position.y - j * this.mazePartSize
                 }, actor.radius);
 
                 const tiles: TSE.TileMapUtils.Tile[] =

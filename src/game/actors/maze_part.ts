@@ -1,10 +1,12 @@
 import * as TSE from '../../lib';
+import {showWarningOnce} from "tslint/lib/error";
 
 export enum TileType {
     WALL = 0,
     PATH = 1,
     RAMP = 2,
     OVER = 3,
+    EXIT = 9,
 }
 
 export interface MazeTile {
@@ -24,6 +26,10 @@ const TileLayouts = {
     DEAD_END: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
+    EXIT: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.EXIT, TileType.EXIT, TileType.WALL,
         TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
     DOUBLE_CORNER: [ TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.PATH, TileType.OVER, TileType.OVER, TileType.RAMP,
@@ -101,15 +107,16 @@ export class MazePart {
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
                 const tile: MazeTile = this.tilesLayout.getTile(row, col);
-                if (tile.type === TileType.WALL) {
-                    ctx.fillStyle = 'black';
-                } else {
-                    ctx.fillStyle = 'LightGrey';
-                } /* else if (tile === TileType.RAMP) {
-                    ctx.fillStyle = 'yellow';
-                } else if (tile === TileType.OVER) {
-                    ctx.fillStyle = 'red';
-                }*/
+                switch (tile.type) {
+                    case TileType.WALL:
+                        ctx.fillStyle = 'black';
+                        break;
+                    case TileType.EXIT:
+                        ctx.fillStyle = 'green';
+                        break;
+                    default:
+                        ctx.fillStyle = 'LightGrey';
+                }
                 if (tile.seen) {
                     const tileSize: number = this.tilesLayout.tileSize;
                     const x: number = tileSize * col;
@@ -142,6 +149,7 @@ export enum MazePartType {
     CROSS,
     DEAD_END,
     DOUBLE_CORNER,
+    EXIT,
     STRAIGHT,
     T_BONE,
     OVERPASS,
@@ -159,6 +167,9 @@ export const MazePartFactory = {
                 break;
             case MazePartType.DEAD_END:
                 mazepart = new MazePart(TileLayouts.DEAD_END);
+                break;
+            case MazePartType.EXIT:
+                mazepart = new MazePart(TileLayouts.EXIT);
                 break;
             case MazePartType.T_BONE:
                 mazepart = new MazePart(TileLayouts.T_BONE);

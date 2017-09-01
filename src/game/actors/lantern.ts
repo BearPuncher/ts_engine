@@ -14,11 +14,10 @@ export default class Lantern extends TSE.CircleActor {
             radius, {layer: player.layer - 1});
         this.player = player;
         this.player.lantern = this;
-        this.debugColour = 'yellow';
     }
 
     public init(): void {
-
+        super.init();
     }
 
     public updatePosition() {
@@ -27,7 +26,7 @@ export default class Lantern extends TSE.CircleActor {
         this.layer = this.player.layer - 1;
     }
 
-    public render():void {
+    public render(): void {
         const ctx: CanvasRenderingContext2D = this.stage.ctx;
         // draw a simple rectangle shape
         ctx.save();

@@ -2,10 +2,9 @@ import * as TSE from '../../lib';
 import Maze from '../actors/maze';
 import {MazePart} from '../actors/maze_part';
 import Player from '../actors/player';
-import {platform} from "os";
 
-// TODO: render fog of war
 // TODO: render shadows around circle
+// TODO: change tilemap to keep tyle info
 export abstract class Level extends TSE.Stage {
 
     protected maze: Maze;
@@ -22,26 +21,36 @@ export abstract class Level extends TSE.Stage {
      * Override.
      */
     public update(step: number): void {
+        let cursor: string = 'default';
         const pos: TSE.Math.IPoint = this.getMousePosition();
         if (pos) {
             // TODO: This is hacky
-            const selectedMazePart: MazePart = this.maze.getMazePart(pos);
-            const standingOnPart: MazePart = this.maze.getMazePart(this.player.position);
-            // TODO: change cursor
-            if (selectedMazePart !== standingOnPart) {
-                if (this.player.clicked) {
-                    if (this.player.clicked.left) {
-                        this.maze.needsUpdate = true;
-                        selectedMazePart.rotateLeft();
+            const selectedMazePart: MazePart = this.maze.getMazePartAtPosition(pos);
+            const standingOnPart: MazePart = this.maze.getMazePartAtPosition(this.player.position);
+            if (selectedMazePart) {
+                // If standing on maze part
+                if (selectedMazePart !== standingOnPart) {
+                    cursor = 'pointer';
+                    if (this.player.mouse) {
+                        if (this.player.mouse.left) {
+                            this.maze.needsUpdate = true;
+                            selectedMazePart.rotateLeft();
+                        }
+                        if (this.player.mouse.right) {
+                            this.maze.needsUpdate = true;
+                            selectedMazePart.rotateRight();
+                        }
                     }
-                    if (this.player.clicked.right) {
-                        this.maze.needsUpdate = true;
-                        selectedMazePart.rotateRight();
-                    }
+                }
+                if (selectedMazePart === standingOnPart) {
+                    cursor = 'not-allowed';
+                }
+                if (!selectedMazePart.rotates) {
+                    cursor = 'no-drop';
                 }
             }
         }
-
+        this.ctx.canvas.style.cursor = cursor;
         super.update(step);
     }
 
@@ -51,7 +60,7 @@ export abstract class Level extends TSE.Stage {
     public render(): void {
         const pos: TSE.Math.IPoint = this.getMousePosition();
         if (pos) {
-            const selectedMazePart: MazePart = this.maze.getMazePart(pos);
+            const selectedMazePart: MazePart = this.maze.getMazePartAtPosition(pos);
             if (selectedMazePart) {
                 selectedMazePart.hovered = true;
             }
@@ -80,10 +89,10 @@ export abstract class Level extends TSE.Stage {
     }
 
     private getMousePosition(): TSE.Math.IPoint {
-        if (!this.player.mousePosition) {
+        if (!this.player.mouse.position) {
             return null;
         }
-        return {x: this.player.mousePosition.x - this.camera.x,
-            y: this.player.mousePosition.y - this.camera.y};
+        return {x: this.player.mouse.position.x - this.camera.x,
+            y: this.player.mouse.position.y - this.camera.y};
     }
 }
