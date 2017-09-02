@@ -9,8 +9,8 @@ export default class Lantern extends TSE.CircleActor {
     public player: Player;
 
     public constructor(player: Player, radius: number) {
-        super({x: player.position.x + player.width / 2,
-            y: player.position.y + player.height / 2},
+        super({x: player.pos.x + player.width / 2,
+            y: player.pos.y + player.height / 2},
             radius, {layer: player.layer - 1});
         this.player = player;
         this.player.lantern = this;
@@ -21,8 +21,8 @@ export default class Lantern extends TSE.CircleActor {
     }
 
     public updatePosition() {
-        this.position = {x: this.player.position.x + this.player.width / 2,
-            y: this.player.position.y + this.player.height / 2};
+        this.pos = {x: this.player.pos.x + this.player.width / 2,
+            y: this.player.pos.y + this.player.height / 2};
         this.layer = this.player.layer - 1;
     }
 
@@ -33,12 +33,12 @@ export default class Lantern extends TSE.CircleActor {
         //ctx.globalAlpha = 0.8;
         ctx.fillStyle = 'rgba(255,255,213, 0.3)';
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius + 6, 0, 2 * Math.PI);
+        ctx.arc(this.pos.x, this.pos.y, this.radius + 6, 0, 2 * Math.PI);
         ctx.fill();
 
         ctx.fillStyle = 'rgba(255,255,213, 0.8)';
         ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.restore();
     }

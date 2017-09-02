@@ -25,7 +25,7 @@ export interface ISpriteOptions {
  */
 export abstract class Actor {
 
-    public position: IPoint;
+    public pos: IPoint;
     public layer: number;
     public stage: Stage;
     public sprite: Sprite;
@@ -35,11 +35,11 @@ export abstract class Actor {
 
     /**
      * Constructor.
-     * @param origin the start position
+     * @param origin the start pos
      * @param options additional options
      */
     constructor(origin: IPoint, options: IActorOptions) {
-        this.position = origin;
+        this.pos = origin;
         this.layer = (options.layer) ? options.layer : 0;
         this.stage = (options.stage) ? options.stage : null;
         this.debugColour = (options.debugColour) ? options.debugColour : 'black';
@@ -78,8 +78,8 @@ export abstract class Actor {
     public render(): void {
         if (this.sprite) {
             const point: IPoint = {
-                x: this.position.x + this.spriteOffset.x,
-                y: this.position.y + this.spriteOffset.y,
+                x: this.pos.x + this.spriteOffset.x,
+                y: this.pos.y + this.spriteOffset.y,
             };
             this.sprite.draw(point, this.stage.ctx, this.opacity);
         }

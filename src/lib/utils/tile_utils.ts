@@ -48,7 +48,7 @@ export class TileMap {
     }
 
     /**
-     * Get the tile's x & y position.
+     * Get the tile's x & y pos.
      */
     public getTilePosition(row: number, col: number): TSE.Math.IPoint {
         return {x: row * this.tileSize, y: col * this.tileSize};
@@ -57,10 +57,10 @@ export class TileMap {
     public getTilesAdjacentToCircleActor(actor: TSE.CircleActor): Tile[] {
         const returnArray: Tile[] = [];
         const tileSize = this.tileSize;
-        let leftTile: number = Math.floor((actor.position.x - actor.radius) / tileSize);
-        let rightTile: number = Math.floor((actor.position.x + actor.radius) / tileSize);
-        let topTile: number = Math.floor((actor.position.y - actor.radius) / tileSize);
-        let bottomTile: number = Math.floor((actor.position.y + actor.radius) / tileSize);
+        let leftTile: number = Math.floor((actor.pos.x - actor.radius) / tileSize);
+        let rightTile: number = Math.floor((actor.pos.x + actor.radius) / tileSize);
+        let topTile: number = Math.floor((actor.pos.y - actor.radius) / tileSize);
+        let bottomTile: number = Math.floor((actor.pos.y + actor.radius) / tileSize);
 
         if (leftTile < 0) {
             leftTile = 0;
@@ -92,10 +92,10 @@ export class TileMap {
     public getTilesAdjacentToRectActor(actor: TSE.RectActor): Tile[] {
         const returnArray: Tile[] = [];
         const tileSize = this.tileSize;
-        let leftTile: number = Math.floor(actor.position.x / tileSize);
-        let rightTile: number = Math.floor((actor.position.x + actor.width) / tileSize);
-        let topTile: number = Math.floor(actor.position.y / tileSize);
-        let bottomTile: number = Math.floor((actor.position.y + actor.height) / tileSize);
+        let leftTile: number = Math.floor(actor.pos.x / tileSize);
+        let rightTile: number = Math.floor((actor.pos.x + actor.width) / tileSize);
+        let topTile: number = Math.floor(actor.pos.y / tileSize);
+        let bottomTile: number = Math.floor((actor.pos.y + actor.height) / tileSize);
 
         if (leftTile < 0) {
             leftTile = 0;

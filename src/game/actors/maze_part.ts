@@ -1,5 +1,4 @@
 import * as TSE from '../../lib';
-import {showWarningOnce} from "tslint/lib/error";
 
 export enum TileType {
     WALL = 0,

@@ -1,9 +1,10 @@
 import * as TSE from '../../lib';
 import Maze from './maze';
 import Lantern from './lantern';
-import {MazeTile, TileType} from "./maze_part";
+import {TileType} from "./maze_part";
 
-enum MoveDirection {
+// Move direction
+enum MoveDir {
     E = 0,
     SE = 45,
     S = 90,
@@ -23,13 +24,13 @@ export default class Player extends TSE.RectActor {
     public maze: Maze;
     // TODO: combine all mouse things under mouse interface.
     public mouse: {left: boolean, right: boolean, position: TSE.Math.IPoint};
-    private oldPosition: TSE.Math.IPoint;
+    private oldPos: TSE.Math.IPoint;
 
     public init(): void {
         this.mouse = {left: false, right: false, position: null};
         this.debugColour = 'orange';
         const canvas: HTMLCanvasElement = this.stage.ctx.canvas;
-        // Update mouse position
+        // Update mouse pos
         canvas.addEventListener('mousemove', (event: MouseEvent) => {
             const rect = this.stage.ctx.canvas.getBoundingClientRect();
             this.mouse.position = {x: event.clientX - rect.left, y: event.clientY - rect.top};
@@ -62,7 +63,7 @@ export default class Player extends TSE.RectActor {
         const ctx = this.stage.ctx;
         ctx.save();
         ctx.fillStyle = this.debugColour;
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
         ctx.restore();
     }
 
@@ -71,58 +72,59 @@ export default class Player extends TSE.RectActor {
 
         const fraction: number = (step / 100);
         const speed: number = fraction * 24;
-        let direction: MoveDirection;
+        // Get current direction
+        let dir: MoveDir;
 
         if (controls.isPressed(TSE.Controller.keys.W) || controls.isPressed(TSE.Controller.keys.UP)) {
-            direction = MoveDirection.N;
+            dir = MoveDir.N;
         }
 
         if (controls.isPressed(TSE.Controller.keys.S) || controls.isPressed(TSE.Controller.keys.DOWN)) {
-            direction = MoveDirection.S;
+            dir = MoveDir.S;
         }
 
         if (controls.isPressed(TSE.Controller.keys.A) || controls.isPressed(TSE.Controller.keys.LEFT)) {
-            if (direction === MoveDirection.N) {
-                direction = MoveDirection.NW;
-            } else if (direction === MoveDirection.S) {
-                direction = MoveDirection.SW;
+            if (dir === MoveDir.N) {
+                dir = MoveDir.NW;
+            } else if (dir === MoveDir.S) {
+                dir = MoveDir.SW;
             } else {
-                direction = MoveDirection.W;
+                dir = MoveDir.W;
             }
         }
 
         if (controls.isPressed(TSE.Controller.keys.D) || controls.isPressed(TSE.Controller.keys.RIGHT)) {
-            if (direction === MoveDirection.N) {
-                direction = MoveDirection.NE;
-            } else if (direction === MoveDirection.S) {
-                direction = MoveDirection.SE;
+            if (dir === MoveDir.N) {
+                dir = MoveDir.NE;
+            } else if (dir === MoveDir.S) {
+                dir = MoveDir.SE;
             } else {
-                direction = MoveDirection.E;
+                dir = MoveDir.E;
             }
         }
 
         // No direction, no move
-        if (typeof direction === 'undefined') {
+        if (typeof dir === 'undefined') {
             return;
         }
 
         // Set to new location, with slide
-        this.oldPosition = this.position;
-        const newX = this.position.x + speed * Math.cos(direction * (Math.PI / 180));
-        this.position = {x: newX, y: this.position.y};
+        this.oldPos = this.pos;
+        const newX = this.pos.x + speed * Math.cos(dir * (Math.PI / 180));
+        this.pos = {x: newX, y: this.pos.y};
         if (this.maze.isRectActorColliding(this)) {
-            this.position = this.oldPosition;
+            this.pos = this.oldPos;
         }
-        this.oldPosition = this.position;
-        const newY = this.position.y + speed * Math.sin(direction * (Math.PI / 180));
-        this.position = {x: this.position.x, y: newY};
+        this.oldPos = this.pos;
+        const newY = this.pos.y + speed * Math.sin(dir * (Math.PI / 180));
+        this.pos = {x: this.pos.x, y: newY};
         if (this.maze.isRectActorColliding(this)) {
-            this.position = this.oldPosition;
+            this.pos = this.oldPos;
         }
 
         const tile: TileType = this.maze.getTileAtPosition({
-            x: this.position.x + this.width / 2,
-            y: this.position.y + this.height / 2
+            x: this.pos.x + this.width / 2,
+            y: this.pos.y + this.height / 2
         });
 
         if (tile === TileType.EXIT) {

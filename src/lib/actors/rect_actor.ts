@@ -35,6 +35,6 @@ export default class RectActor extends Actor {
     protected drawDebug() {
         const ctx = this.stage.ctx;
         ctx.strokeStyle = this.debugColour;
-        ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
+        ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
     }
 }

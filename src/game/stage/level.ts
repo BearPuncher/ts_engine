@@ -21,58 +21,60 @@ export abstract class Level extends TSE.Stage {
      * Override.
      */
     public update(step: number): void {
-        let cursor: string = 'default';
+        this.maze.resetHover();
+        let cursor: string = 'no-drop';
         const pos: TSE.Math.IPoint = this.getMousePosition();
         if (pos) {
             // TODO: This is hacky
-            const selectedMazePart: MazePart = this.maze.getMazePartAtPosition(pos);
-            const standingOnPart: MazePart = this.maze.getMazePartAtPosition(this.player.position);
-            if (selectedMazePart) {
+            const selectedPart: MazePart = this.maze.getMazePartAtPosition(pos);
+            const standingPart: MazePart = this.maze.getMazePartAtPosition(this.player.pos);
+
+            const distX: number = Math.abs(
+                Math.floor(pos.x / this.maze.mazePartSize) - Math.floor(this.player.pos.x / this.maze.mazePartSize));
+            const distY: number = Math.abs(
+                Math.floor(pos.y / this.maze.mazePartSize) - Math.floor(this.player.pos.y / this.maze.mazePartSize));
+
+            const adjacent: boolean = (distX === 0 && distY === 1) || (distX === 1 && distY === 0);
+            if (selectedPart && adjacent) {
                 // If standing on maze part
-                if (selectedMazePart !== standingOnPart) {
-                    cursor = 'pointer';
-                    if (this.player.mouse) {
-                        if (this.player.mouse.left) {
-                            this.maze.needsUpdate = true;
-                            selectedMazePart.rotateLeft();
-                        }
-                        if (this.player.mouse.right) {
-                            this.maze.needsUpdate = true;
-                            selectedMazePart.rotateRight();
+                if (selectedPart !== standingPart) {
+                    if (selectedPart.rotates) {
+                        cursor = 'pointer';
+                        if (this.player.mouse) {
+                            if (this.player.mouse.left) {
+                                this.maze.needsUpdate = true;
+                                selectedPart.rotateLeft();
+                            }
+                            if (this.player.mouse.right) {
+                                this.maze.needsUpdate = true;
+                                selectedPart.rotateRight();
+                            }
                         }
                     }
+                    selectedPart.hovered = true;
                 }
-                if (selectedMazePart === standingOnPart) {
+            } else if (selectedPart === standingPart) {
+                if (selectedPart.rotates) {
                     cursor = 'not-allowed';
-                }
-                if (!selectedMazePart.rotates) {
-                    cursor = 'no-drop';
                 }
             }
         }
         this.ctx.canvas.style.cursor = cursor;
         super.update(step);
+
     }
 
     /**
      * Override.
      */
     public render(): void {
-        const pos: TSE.Math.IPoint = this.getMousePosition();
-        if (pos) {
-            const selectedMazePart: MazePart = this.maze.getMazePartAtPosition(pos);
-            if (selectedMazePart) {
-                selectedMazePart.hovered = true;
-            }
-        }
-
         const ctx: CanvasRenderingContext2D = this.ctx;
         ctx.save();
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, this.width, this.height);
 
-        let cameraX: number = - this.player.position.x + this.width / 2;
-        let cameraY: number = - this.player.position.y + this.height / 2;
+        let cameraX: number = - this.player.pos.x + this.width / 2;
+        let cameraY: number = - this.player.pos.y + this.height / 2;
 
         if (this.cameraClamp) {
             // Clamp camera to puzzle area
