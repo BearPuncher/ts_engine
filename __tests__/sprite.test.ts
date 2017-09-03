@@ -5,7 +5,7 @@ const WIDTH = 20, HEIGHT = 40, INTERVAL = 20, CYCLE: [[number, number]] = [[0,0]
 
 const ImageMock = jest.fn<HTMLImageElement>();
 const IMAGE: HTMLImageElement = new ImageMock();
-// Mock render image.
+// Mock drawMazeParts image.
 const CtxMock = jest.fn<CanvasRenderingContext2D>();
 const CTX: CanvasRenderingContext2D = new CtxMock();
 CTX.save = jest.fn();
@@ -48,7 +48,7 @@ describe("Sprite", () => {
         expect(sprite2.updateFrame(0)).toBeUndefined();
     });
 
-    test('update & render', () => {
+    test('update & drawMazeParts', () => {
         expect(sprite2.updateFrame(INTERVAL)).toBeUndefined();
         expect(sprite2.draw(POINT, CTX, 1)).toBeUndefined();
         expect(CTX.save).toHaveBeenCalledTimes(1);

@@ -37,8 +37,8 @@ describe("RectActor", () => {
     let rectActor = new RectActor(ORIGIN, WIDTH, HEIGHT);
 
     test('is initialised correctly', () => {
-        expect(rectActor.position.x).toBe(ORIGIN.x);
-        expect(rectActor.position.y).toBe(ORIGIN.y);
+        expect(rectActor.pos.x).toBe(ORIGIN.x);
+        expect(rectActor.pos.y).toBe(ORIGIN.y);
         expect(rectActor.width).toBe(WIDTH);
         expect(rectActor.height).toBe(HEIGHT);
         expect(rectActor.stage).toBe(null);
@@ -49,7 +49,7 @@ describe("RectActor", () => {
         expect(rectActor.opacity).toBe(1);
     });
 
-    test('render without sprite', () => {
+    test('drawMazeParts without sprite', () => {
         rectActor.stage = STAGE;
 
         expect(rectActor.update(STEP)).toBeUndefined();
@@ -80,8 +80,8 @@ describe("RectActor", () => {
         expect(rectActorWithOptions.spriteOffset.y).toBe(0);
         expect(rectActorWithOptions.opacity).toBe(1);
 
-        expect(rectActorWithOptions.position.x).toBe(ORIGIN.x);
-        expect(rectActorWithOptions.position.y).toBe(ORIGIN.y);
+        expect(rectActorWithOptions.pos.x).toBe(ORIGIN.x);
+        expect(rectActorWithOptions.pos.y).toBe(ORIGIN.y);
         expect(rectActorWithOptions.layer).toBe(LAYER);
         expect(rectActorWithOptions.stage).toBe(STAGE);
 
@@ -98,8 +98,8 @@ describe("CircleActor", () => {
     circleActor.stage = STAGE;
 
     test('is initialised correctly', () => {
-        expect(circleActor.position.x).toBe(ORIGIN.x);
-        expect(circleActor.position.y).toBe(ORIGIN.y);
+        expect(circleActor.pos.x).toBe(ORIGIN.x);
+        expect(circleActor.pos.y).toBe(ORIGIN.y);
         expect(circleActor.radius).toBe(RADIUS);
         expect(circleActor.stage).toBe(STAGE);
 
@@ -127,8 +127,8 @@ describe("CircleActor", () => {
     test('is initialised correctly with options', () => {
         let circleActorWithOptions = new CircleActor(ORIGIN, RADIUS, {layer: LAYER, stage: STAGE});
 
-        expect(circleActorWithOptions.position.x).toBe(ORIGIN.x);
-        expect(circleActorWithOptions.position.y).toBe(ORIGIN.y);
+        expect(circleActorWithOptions.pos.x).toBe(ORIGIN.x);
+        expect(circleActorWithOptions.pos.y).toBe(ORIGIN.y);
         expect(circleActorWithOptions.layer).toBe(LAYER);
         expect(circleActorWithOptions.stage).toBe(STAGE);
     });
