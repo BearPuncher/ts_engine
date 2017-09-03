@@ -37,4 +37,18 @@ export default class RectActor extends Actor {
         ctx.strokeStyle = this.debugColour;
         ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
     }
+
+    public static rectOverlap(a: RectActor, b: RectActor): boolean {
+        const xOverlap: boolean = this.valueInRange(a.pos.x, b.pos.x, b.pos.x + b.width) ||
+            this.valueInRange(b.pos.x, a.pos.x, a.pos.x + a.width);
+
+        const yOverlap: boolean = this.valueInRange(a.pos.y, b.pos.y, b.pos.y + b.height) ||
+            this.valueInRange(b.pos.y, a.pos.y, a.pos.y + a.height);
+
+        return xOverlap && yOverlap;
+    }
+
+    private static valueInRange(value: number, min: number, max: number): boolean {
+        return (value >= min) && (value <= max);
+    }
 }

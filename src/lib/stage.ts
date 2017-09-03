@@ -49,16 +49,21 @@ export default class Stage {
     public update(step: number): void {
         this.sortActorsByLayer();
         // Iterate over all actors and update
+        const newActors: Actor[] = [];
         for (const actor of this.actors) {
             actor.update(step);
+            if (!actor.remove) {
+                newActors.push(actor);
+            }
         }
+        this.actors = newActors;
     }
 
     /**
      * Render the currentStage. Can be overridden.
      */
     public render(): void {
-        // Iterate over all actors and render
+        // Iterate over all actors and drawMazeParts
         for (const actor of this.actors) {
             actor.render();
         }

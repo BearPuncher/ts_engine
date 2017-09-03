@@ -2,8 +2,9 @@ import * as TSE from '../../lib';
 import Maze from '../actors/maze';
 import {MazePart} from '../actors/maze_part';
 import Player from '../actors/player';
+import Treasure from "../actors/treasure";
 
-// TODO: render shadows around circle
+// TODO: drawMazeParts shadows around circle
 // TODO: change tilemap to keep tyle info
 export abstract class Level extends TSE.Stage {
 
@@ -11,6 +12,14 @@ export abstract class Level extends TSE.Stage {
     protected player: Player;
     protected camera: TSE.Math.IPoint = {x: 0, y: 0};
     protected cameraClamp: boolean = false;
+    protected treasures: Treasure[];
+    protected numTreasures: number;
+
+    public constructor(width: number, height: number) {
+        super(width, height);
+        this.treasures = [];
+        this.numTreasures = 0;
+    }
 
     /**
      * Override.
@@ -21,10 +30,19 @@ export abstract class Level extends TSE.Stage {
      * Override.
      */
     public update(step: number): void {
-        this.maze.resetHover();
+        this.maze.resetState();
         let cursor: string = 'no-drop';
         const pos: TSE.Math.IPoint = this.getMousePosition();
         if (pos) {
+
+            // Set adjacent maze parts to be actionable
+            const adjacentMazeParts: MazePart[] = this.maze.getAdjacentMazeParts(this.player.pos);
+            for (let i = 0; i < adjacentMazeParts.length; i++) {
+                if (adjacentMazeParts[i]) {
+                    adjacentMazeParts[i].actionable = true;
+                }
+            }
+
             // TODO: This is hacky
             const selectedPart: MazePart = this.maze.getMazePartAtPosition(pos);
             const standingPart: MazePart = this.maze.getMazePartAtPosition(this.player.pos);
@@ -35,6 +53,7 @@ export abstract class Level extends TSE.Stage {
                 Math.floor(pos.y / this.maze.mazePartSize) - Math.floor(this.player.pos.y / this.maze.mazePartSize));
 
             const adjacent: boolean = (distX === 0 && distY === 1) || (distX === 1 && distY === 0);
+
             if (selectedPart && adjacent) {
                 // If standing on maze part
                 if (selectedPart !== standingPart) {
@@ -57,11 +76,21 @@ export abstract class Level extends TSE.Stage {
                 if (selectedPart.rotates) {
                     cursor = 'not-allowed';
                 }
+                selectedPart.actionable = true;
             }
         }
         this.ctx.canvas.style.cursor = cursor;
-        super.update(step);
 
+        // Check if player picked up treasure
+        // yuck
+        for (let treasure of this.treasures) {
+            if (!treasure.remove && treasure.isColliding(this.player)) {
+                treasure.remove = true;
+                this.numTreasures++;
+            }
+        }
+
+        super.update(step);
     }
 
     /**
@@ -87,14 +116,21 @@ export abstract class Level extends TSE.Stage {
         ctx.translate(cameraX, cameraY);
         this.camera = {x: cameraX, y: cameraY};
         super.render();
+        this.maze.drawMazePostEffects();
         ctx.restore();
+
+        // Show treasure count
+        ctx.font = '30px Arial';
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = 'white';
+        ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.height - 30);
     }
 
     private getMousePosition(): TSE.Math.IPoint {
-        if (!this.player.mouse.position) {
+        if (!this.player.mouse.pos) {
             return null;
         }
-        return {x: this.player.mouse.position.x - this.camera.x,
-            y: this.player.mouse.position.y - this.camera.y};
+        return {x: this.player.mouse.pos.x - this.camera.x,
+            y: this.player.mouse.pos.y - this.camera.y};
     }
 }

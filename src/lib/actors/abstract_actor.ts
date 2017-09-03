@@ -31,6 +31,7 @@ export abstract class Actor {
     public sprite: Sprite;
     public spriteOffset: {x: number, y: number};
     public opacity: number;
+    public remove: boolean;
     protected debugColour: string;
 
     /**
@@ -46,6 +47,7 @@ export abstract class Actor {
         this.sprite = null;
         this.spriteOffset = {x: 0, y: 0};
         this.opacity = 1;
+        this.remove = false;
     }
 
     /**

@@ -55,26 +55,64 @@ export default class Maze extends TSE.RectActor {
         }
     }
 
-    public resetHover(): void {
+    public iterateMazeParts(callback: Function): void {
         for (let row = 0; row < this.mazePartMap.length; row++) {
             for (let col = 0; col < this.mazePartMap[row].length; col++) {
-                this.mazePartMap[row][col].hovered = false;
+                callback(this.mazePartMap[row][col], row, col);
             }
         }
+    }
+
+    public resetState(): void {
+        this.iterateMazeParts((part: MazePart, row: number, col: number) => {
+            part.actionable = false;
+            part.hovered = false;
+        });
     }
 
     /**
      * Override.
      */
     public render(): void {
-        super.render();
-        for (let row = 0; row < this.mazePartMap.length; row++) {
-            for (let col = 0; col < this.mazePartMap[row].length; col++) {
-                // copy tilelayout to tilemap
-                const length: number = this.mazePartMap[row][col].length;
-                this.mazePartMap[row][col].render(col * length, row * length, this.stage.ctx);
-            }
+        this.iterateMazeParts((part: MazePart, row: number, col: number) => {
+            const length: number = part.length;
+            part.drawMazeParts(col * length, row * length, this.stage.ctx);
+        });
+    }
+
+    public drawMazePostEffects(): void {
+        this.iterateMazeParts((part: MazePart, row: number, col: number) => {
+            const length: number = part.length;
+            part.drawPostEffects(col * length, row * length, this.stage.ctx);
+        });
+    }
+
+    public getAdjacentMazeParts(pos: TSE.Math.IPoint): MazePart[] {
+        if (pos.x < 0 || pos.x > this.width ||
+            pos.y < 0 || pos.y > this.height) {
+            return [];
         }
+        const currentRow: number = Math.floor(pos.y / this.mazePartSize);
+        const currentCol: number = Math.floor(pos.x / this.mazePartSize);
+        if (!this.mazePartMap[currentRow]) {
+            return [];
+        }
+
+        const returnArray: MazePart[] = [];
+        if (currentRow - 1 >= 0) {
+            returnArray.push(this.mazePartMap[currentRow - 1][currentCol]);
+        }
+        if (currentRow + 1 < this.rows) {
+            returnArray.push(this.mazePartMap[currentRow + 1][currentCol]);
+        }
+        if (currentCol - 1 >= 0) {
+            returnArray.push(this.mazePartMap[currentRow][currentCol - 1]);
+        }
+        if (currentCol + 1 < this.cols) {
+            returnArray.push(this.mazePartMap[currentRow][currentCol + 1]);
+        }
+
+        return returnArray;
     }
 
     public getMazePartAtPosition(pos: TSE.Math.IPoint): MazePart {
@@ -137,7 +175,7 @@ export default class Maze extends TSE.RectActor {
                 }, actor.radius);
 
                 const tiles: TSE.TileMapUtils.Tile[] =
-                    this.mazePartMap[j][i].tilesLayout.getTilesAdjacentToCircleActor(circleActor);
+                    this.mazePartMap[j][i].layout.getTilesAdjacentToCircleActor(circleActor);
                 for (let tile of tiles) {
                     tile.value.seen = true;
                 }
@@ -170,19 +208,14 @@ export default class Maze extends TSE.RectActor {
     }
 
     private updateTileMapWithMazeParts(): void {
-        for (let row = 0; row < this.mazePartMap.length; row++) {
-            for (let col = 0; col < this.mazePartMap[row].length; col++) {
-                // copy tilelayout to tilemap
-                const mazePart: MazePart = this.mazePartMap[row][col];
-                for (let innerRow = 0; innerRow < mazePart.diameter; innerRow++) {
-                    for (let innerCol = 0; innerCol < mazePart.diameter; innerCol++) {
-                        const tile: MazeTile = mazePart.tilesLayout.getTile(innerRow, innerCol);
-                        this.tileMap.setTile(row * mazePart.diameter + innerRow,
-                            col * mazePart.diameter + innerCol, tile.type);
-                    }
+        this.iterateMazeParts((part: MazePart, row: number, col: number) => {
+            for (let innerRow = 0; innerRow < part.diameter; innerRow++) {
+                for (let innerCol = 0; innerCol < part.diameter; innerCol++) {
+                    const tile: MazeTile = part.layout.getTile(innerRow, innerCol);
+                    this.tileMap.setTile(row * part.diameter + innerRow,
+                        col * part.diameter + innerCol, tile.type);
                 }
             }
-        }
+        });
     }
-
 }

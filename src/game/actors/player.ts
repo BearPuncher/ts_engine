@@ -23,23 +23,23 @@ export default class Player extends TSE.RectActor {
     public lantern: Lantern;
     public maze: Maze;
     // TODO: combine all mouse things under mouse interface.
-    public mouse: {left: boolean, right: boolean, position: TSE.Math.IPoint};
+    public mouse: {left: boolean, right: boolean, pos: TSE.Math.IPoint};
     private oldPos: TSE.Math.IPoint;
 
     public init(): void {
-        this.mouse = {left: false, right: false, position: null};
+        this.mouse = {left: false, right: false, pos: null};
         this.debugColour = 'orange';
         const canvas: HTMLCanvasElement = this.stage.ctx.canvas;
         // Update mouse pos
         canvas.addEventListener('mousemove', (event: MouseEvent) => {
             const rect = this.stage.ctx.canvas.getBoundingClientRect();
-            this.mouse.position = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
         }, true);
         // Capture click
         canvas.addEventListener('mousedown', (event: MouseEvent) => {
             event.preventDefault();
             const rect = this.stage.ctx.canvas.getBoundingClientRect();
-            this.mouse.position = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
             this.mouse.left = event.button === 0;
             this.mouse.right = event.button === 2;
         }, true);

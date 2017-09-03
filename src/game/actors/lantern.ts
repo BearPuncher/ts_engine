@@ -30,16 +30,21 @@ export default class Lantern extends TSE.CircleActor {
         const ctx: CanvasRenderingContext2D = this.stage.ctx;
         // draw a simple rectangle shape
         ctx.save();
-        //ctx.globalAlpha = 0.8;
-        ctx.fillStyle = 'rgba(255,255,213, 0.3)';
+        /*
+        ctx.fillStyle = 'rgb(0,0,0, 0.8)';
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.globalCompositeOperation = 'lighter';
+        */
+        ctx.fillStyle = 'rgba(255, 255, 213, 0.3)';
         ctx.beginPath();
         ctx.arc(this.pos.x, this.pos.y, this.radius + 6, 0, 2 * Math.PI);
         ctx.fill();
 
-        ctx.fillStyle = 'rgba(255,255,213, 0.8)';
+        ctx.fillStyle = 'rgba(255, 255, 213, 0.8)';
         ctx.beginPath();
         ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
         ctx.fill();
+
         ctx.restore();
     }
 }

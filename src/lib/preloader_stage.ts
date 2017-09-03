@@ -33,7 +33,7 @@ export default class PreloaderStage extends Stage {
     }
 
     /**
-     * Overriding render function.
+     * Overriding drawMazeParts function.
      */
     public render() {
         super.render();

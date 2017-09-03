@@ -52,7 +52,7 @@ export default class Engine {
 
     /**
      * Set a currentStage.
-     * @param {Stage} stage - The currentStage to update and render.
+     * @param {Stage} stage - The currentStage to update and drawMazeParts.
      */
     public setStage(stage: Stage) {
         this.currentStage = stage;
@@ -109,7 +109,7 @@ export default class Engine {
         // Set game loop
         this.loop();
 
-        // Create render loop
+        // Create drawMazeParts loop
         const engine = this;
         function renderLoop() {
             engine.render();

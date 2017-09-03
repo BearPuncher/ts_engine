@@ -50,10 +50,11 @@ const TileLayouts = {
 
 export class MazePart {
 
-    public tilesLayout: TSE.TileMapUtils.TileMap;
+    public layout: TSE.TileMapUtils.TileMap;
     public length: number;
     public diameter: number;
     public direction: number;
+    public actionable: boolean;
     public hovered: boolean;
     public rotates: boolean;
 
@@ -61,8 +62,9 @@ export class MazePart {
         this.length = 128;
         this.diameter = 4;
         this.direction = 0;
-        this.tilesLayout = new TSE.TileMapUtils.TileMap(
+        this.layout = new TSE.TileMapUtils.TileMap(
             this.diameter, this.diameter, this.length / this.diameter, this.populateFromTileLayouts(tilesLayout));
+        this.actionable = false;
         this.hovered = false;
         this.rotates = true;
     }
@@ -77,11 +79,11 @@ export class MazePart {
 
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
-                newTiles[row * this.diameter + col] = this.tilesLayout.getTile(this.diameter - col - 1, row);
+                newTiles[row * this.diameter + col] = this.layout.getTile(this.diameter - col - 1, row);
             }
         }
 
-        this.tilesLayout.tiles = newTiles;
+        this.layout.tiles = newTiles;
     }
 
     public rotateLeft(): void {
@@ -93,19 +95,19 @@ export class MazePart {
 
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
-                newTiles[row * this.diameter + col] = this.tilesLayout.getTile(col, this.diameter - row - 1);
+                newTiles[row * this.diameter + col] = this.layout.getTile(col, this.diameter - row - 1);
             }
         }
 
-        this.tilesLayout.tiles = newTiles;
+        this.layout.tiles = newTiles;
     }
 
-    public render(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D): void {
+    public drawMazeParts(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D): void {
         ctx.save();
         ctx.translate(xOffset, yOffset);
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
-                const tile: MazeTile = this.tilesLayout.getTile(row, col);
+                const tile: MazeTile = this.layout.getTile(row, col);
                 switch (tile.type) {
                     case TileType.WALL:
                         ctx.fillStyle = 'black';
@@ -117,20 +119,29 @@ export class MazePart {
                         ctx.fillStyle = 'LightGrey';
                 }
                 if (tile.seen) {
-                    const tileSize: number = this.tilesLayout.tileSize;
+                    const tileSize: number = this.layout.tileSize;
                     const x: number = tileSize * col;
                     const y: number = tileSize * row;
-                    ctx.lineWidth = 1;
-                    ctx.fillRect(x, y, this.tilesLayout.tileSize, this.tilesLayout.tileSize);
+                    ctx.lineWidth = 0;
+                    ctx.fillRect(x, y, this.layout.tileSize, this.layout.tileSize);
                 }
             }
         }
-        if (this.hovered && this.rotates) {
-            ctx.lineWidth = 1;
+        ctx.restore();
+    }
+
+    public drawPostEffects(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.translate(xOffset, yOffset);
+        ctx.lineWidth = 3;
+
+        if (this.rotates && this.actionable) {
             ctx.strokeStyle = 'red';
+            if (this.hovered) {
+                ctx.strokeStyle = 'blue';
+            }
             ctx.strokeRect(0, 0, this.length, this.length);
         }
-
         ctx.restore();
     }
 
