@@ -12,13 +12,13 @@ const TILE_SIZE: number = 128;
 const MAZE_PARTS: MazePart[][] = [];
 MAZE_PARTS[0] = [];
 MAZE_PARTS[0][0] = MazePartFactory.createMazePart(MazePartType.CORNER, 1, false);
-MAZE_PARTS[0][1] = MazePartFactory.createMazePart(MazePartType.STRAIGHT, 1, false);
-MAZE_PARTS[0][2] = MazePartFactory.createMazePart(MazePartType.DEAD_END, 3, false);
+MAZE_PARTS[0][1] = MazePartFactory.createMazePart(MazePartType.DEAD_END, 3, false);
+MAZE_PARTS[0][2] = MazePartFactory.createMazePart(MazePartType.DEAD_END, 2, false);
 MAZE_PARTS[0][3] = MazePartFactory.createMazePart(MazePartType.EXIT, 2, false);
 MAZE_PARTS[1] = [];
 MAZE_PARTS[1][0] = MazePartFactory.createMazePart(MazePartType.T_BONE, 0, true);
 MAZE_PARTS[1][1] = MazePartFactory.createMazePart(MazePartType.STRAIGHT, 1, false);
-MAZE_PARTS[1][2] = MazePartFactory.createMazePart(MazePartType.DEAD_END, 3, false);
+MAZE_PARTS[1][2] = MazePartFactory.createMazePart(MazePartType.CORNER, 3, false);
 MAZE_PARTS[1][3] = MazePartFactory.createMazePart(MazePartType.STRAIGHT, 1, true);
 MAZE_PARTS[2] = [];
 MAZE_PARTS[2][0] = MazePartFactory.createMazePart(MazePartType.STRAIGHT, 0, false);
@@ -43,7 +43,7 @@ export default class Level1 extends Level {
         super.addActor(this.player);
         this.player.maze = this.maze;
 
-        const treasure = new Treasure({x: 308, y: 176});
+        const treasure = new Treasure({x: 308, y: 48});
         this.treasures.push(treasure);
         super.addActor(treasure);
 
