@@ -33,8 +33,8 @@ export abstract class Level extends TSE.Stage {
         this.maze.resetState();
         let cursor: string = 'no-drop';
         const pos: TSE.Math.IPoint = this.getMousePosition();
-        if (pos) {
 
+        if (this.player.pos) {
             // Set adjacent maze parts to be actionable
             const adjacentMazeParts: MazePart[] = this.maze.getAdjacentMazeParts(this.player.pos);
             for (let i = 0; i < adjacentMazeParts.length; i++) {
@@ -42,6 +42,9 @@ export abstract class Level extends TSE.Stage {
                     adjacentMazeParts[i].actionable = true;
                 }
             }
+        }
+
+        if (pos) {
 
             // TODO: This is hacky
             const selectedPart: MazePart = this.maze.getMazePartAtPosition(pos);

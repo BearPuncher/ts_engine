@@ -26,14 +26,14 @@ const TileLayouts = {
         TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
-    EXIT: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
-        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
-        TileType.WALL, TileType.EXIT, TileType.EXIT, TileType.WALL,
-        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
     DOUBLE_CORNER: [ TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.PATH, TileType.OVER, TileType.OVER, TileType.RAMP,
         TileType.PATH, TileType.OVER, TileType.OVER, TileType.RAMP,
         TileType.WALL, TileType.RAMP, TileType.RAMP, TileType.WALL],
+    EXIT: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
+        TileType.WALL, TileType.EXIT, TileType.EXIT, TileType.WALL,
+        TileType.WALL, TileType.WALL, TileType.WALL, TileType.WALL],
     OVERPASS: [TileType.WALL, TileType.PATH, TileType.PATH, TileType.WALL,
         TileType.RAMP, TileType.OVER, TileType.OVER, TileType.RAMP,
         TileType.RAMP, TileType.OVER, TileType.OVER, TileType.RAMP,
@@ -57,6 +57,7 @@ export class MazePart {
     public actionable: boolean;
     public hovered: boolean;
     public rotates: boolean;
+    public sprite: TSE.Sprite;
 
     constructor(tilesLayout: number[]) {
         this.length = 128;
@@ -67,6 +68,11 @@ export class MazePart {
         this.actionable = false;
         this.hovered = false;
         this.rotates = true;
+
+        // Set sprite
+        const LOADER: TSE.AssetLoader = new TSE.AssetLoader();
+        this.sprite = new TSE.Sprite(LOADER.getImage('mazetilemap'), 32, 32);
+        this.sprite.setScale(4);
     }
 
     // TODO: move this to the tile_map class, add rotations there
@@ -83,6 +89,7 @@ export class MazePart {
             }
         }
 
+        this.sprite.angle = this.direction;
         this.layout.tiles = newTiles;
     }
 
@@ -99,34 +106,29 @@ export class MazePart {
             }
         }
 
+        this.sprite.angle = this.direction;
         this.layout.tiles = newTiles;
     }
 
     public drawMazeParts(xOffset: number, yOffset: number, ctx: CanvasRenderingContext2D): void {
         ctx.save();
         ctx.translate(xOffset, yOffset);
+        this.sprite.draw({x: 0, y: 0}, ctx);
+
         for (let row = 0; row < this.diameter; row++) {
             for (let col = 0; col < this.diameter; col++) {
                 const tile: MazeTile = this.layout.getTile(row, col);
-                switch (tile.type) {
-                    case TileType.WALL:
-                        ctx.fillStyle = 'black';
-                        break;
-                    case TileType.EXIT:
-                        ctx.fillStyle = 'green';
-                        break;
-                    default:
-                        ctx.fillStyle = 'LightGrey';
-                }
-                if (tile.seen) {
+                if (!tile.seen) {
                     const tileSize: number = this.layout.tileSize;
                     const x: number = tileSize * col;
                     const y: number = tileSize * row;
+                    ctx.fillStyle = 'black';
                     ctx.lineWidth = 0;
                     ctx.fillRect(x, y, this.layout.tileSize, this.layout.tileSize);
                 }
             }
         }
+
         ctx.restore();
     }
 
@@ -155,7 +157,7 @@ export class MazePart {
 }
 
 export enum MazePartType {
-    CORNER,
+    CORNER = 0,
     CROSS,
     DEAD_END,
     DOUBLE_CORNER,
@@ -169,23 +171,29 @@ export const MazePartFactory = {
     createMazePart: (type: MazePartType, rotate: number, canRotate: boolean): MazePart => {
         let mazepart: MazePart;
         switch (type) {
-            case MazePartType.STRAIGHT:
-                mazepart = new MazePart(TileLayouts.STRAIGHT);
-                break;
             case MazePartType.CORNER:
                 mazepart = new MazePart(TileLayouts.CORNER);
-                break;
-            case MazePartType.DEAD_END:
-                mazepart = new MazePart(TileLayouts.DEAD_END);
-                break;
-            case MazePartType.EXIT:
-                mazepart = new MazePart(TileLayouts.EXIT);
-                break;
-            case MazePartType.T_BONE:
-                mazepart = new MazePart(TileLayouts.T_BONE);
+                mazepart.sprite.setCycle([[0, 0]], 0);
                 break;
             case MazePartType.CROSS:
                 mazepart = new MazePart(TileLayouts.CROSS);
+                mazepart.sprite.setCycle([[1, 0]], 0);
+                break;
+            case MazePartType.DEAD_END:
+                mazepart = new MazePart(TileLayouts.DEAD_END);
+                mazepart.sprite.setCycle([[2, 0]], 0);
+                break;
+            case MazePartType.EXIT:
+                mazepart = new MazePart(TileLayouts.EXIT);
+                mazepart.sprite.setCycle([[3, 0]], 0);
+                break;
+            case MazePartType.STRAIGHT:
+                mazepart = new MazePart(TileLayouts.STRAIGHT);
+                mazepart.sprite.setCycle([[4, 0]], 0);
+                break;
+            case MazePartType.T_BONE:
+                mazepart = new MazePart(TileLayouts.T_BONE);
+                mazepart.sprite.setCycle([[5, 0]], 0);
                 break;
             case MazePartType.OVERPASS:
                 mazepart = new MazePart(TileLayouts.OVERPASS);

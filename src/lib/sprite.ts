@@ -9,6 +9,7 @@ export default class Sprite {
     public image: HTMLImageElement;
     public width: number;
     public height: number;
+    public angle: number;
     public scale: {x: number, y: number};
     private cycle: [[number, number]];
     private interval: number;
@@ -25,6 +26,7 @@ export default class Sprite {
         this.image = image;
         this.width = width;
         this.height = (height) ? height : width;
+        this.angle = 0;
         this.scale = {x: 1, y: 1};
         this.frame = 0;
     }
@@ -70,15 +72,22 @@ export default class Sprite {
      */
     public draw(point: IPoint, ctx: CanvasRenderingContext2D, opacity?: number): void {
         const framePositions = this.cycle[this.frame];
-        const dx = framePositions[0] * this.width;
-        const dy = framePositions[1] * this.height;
+        const sX = framePositions[0] * this.width;
+        const sY = framePositions[1] * this.height;
+        const dX = this.width / 2;
+        const dY = this.height / 2;
 
         ctx.save();
         ctx.translate(point.x, point.y);
+        // Draw sprite scaled and rotated
+        ctx.imageSmoothingEnabled = false;
         ctx.globalAlpha = opacity ? opacity : 1;
         ctx.scale(this.scale.x, this.scale.y);
-        ctx.drawImage(this.image, dx, dy, this.width, this.height,
-            0, 0, this.width, this.height);
+        ctx.translate(dX, dY);
+        ctx.rotate(this.angle * Math.PI / 180);
+        ctx.drawImage(this.image, sX, sY, this.width, this.height,
+             - dX, - dY, this.width, this.height);
+        // restroe
         ctx.restore();
     }
 }

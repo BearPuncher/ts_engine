@@ -33,7 +33,7 @@ export default class Lantern extends TSE.CircleActor {
         /*
         ctx.fillStyle = 'rgb(0,0,0, 0.8)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.globalCompositeOperation = 'lighter';
+        ctx.globalCompositeOperation = 'overlay';
         */
         ctx.fillStyle = 'rgba(255, 255, 213, 0.3)';
         ctx.beginPath();
