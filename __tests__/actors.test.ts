@@ -25,10 +25,10 @@ CANVAS.getContext = jest.fn(() => {
     return CTX;
 });
 
-const STAGE: Stage = jest.genMockFromModule('../src/lib/stage');
+const STAGE: Stage = jest.genMockFromModule('../src/lib/st');
 STAGE.ctx = CTX;
 
-const SPRITE: Sprite = jest.genMockFromModule('../src/lib/sprite');
+const SPRITE: Sprite = jest.genMockFromModule('../src/lib/s');
 SPRITE.updateFrame = jest.fn();
 SPRITE.draw = jest.fn();
 
@@ -37,11 +37,11 @@ describe("RectActor", () => {
     let rectActor = new RectActor(ORIGIN, WIDTH, HEIGHT);
 
     test('is initialised correctly', () => {
-        expect(rectActor.pos.x).toBe(ORIGIN.x);
-        expect(rectActor.pos.y).toBe(ORIGIN.y);
-        expect(rectActor.width).toBe(WIDTH);
-        expect(rectActor.height).toBe(HEIGHT);
-        expect(rectActor.stage).toBe(null);
+        expect(rectActor.p.x).toBe(ORIGIN.x);
+        expect(rectActor.p.y).toBe(ORIGIN.y);
+        expect(rectActor.w).toBe(WIDTH);
+        expect(rectActor.h).toBe(HEIGHT);
+        expect(rectActor.st).toBe(null);
 
         // Verify defaults
         expect(rectActor.spriteOffset.x).toBe(0);
@@ -49,59 +49,59 @@ describe("RectActor", () => {
         expect(rectActor.opacity).toBe(1);
     });
 
-    test('drawMazeParts without sprite', () => {
-        rectActor.stage = STAGE;
+    test('drawMazeParts without s', () => {
+        rectActor.st = STAGE;
 
         expect(rectActor.update(STEP)).toBeUndefined();
         expect(rectActor.render()).toBeUndefined();
     });
 
-    test('adding sprite with additional options', () => {
+    test('adding s with additional options', () => {
 
-        expect(rectActor.setSprite({sprite: SPRITE, spriteOffset: ORIGIN, opacity: OPACITY})).toBeUndefined();
-        expect(rectActor.sprite).toBe(SPRITE);
+        expect(rectActor.setSprite({sp: SPRITE, spriteOffset: ORIGIN, opacity: OPACITY})).toBeUndefined();
+        expect(rectActor.sp).toBe(SPRITE);
         expect(rectActor.spriteOffset.x).toBe(ORIGIN.x);
         expect(rectActor.spriteOffset.y).toBe(ORIGIN.y);
         expect(rectActor.opacity).toBe(OPACITY);
 
         expect(rectActor.update(STEP)).toBeUndefined();
-        expect(rectActor.sprite.updateFrame).toHaveBeenCalled();
+        expect(rectActor.sp.updateFrame).toHaveBeenCalled();
         expect(rectActor.render()).toBeUndefined();
-        expect(rectActor.sprite.draw).toHaveBeenCalled();
+        expect(rectActor.sp.draw).toHaveBeenCalled();
     });
 
     test('is initialised correctly with options', () => {
         let rectActorWithOptions = new RectActor(ORIGIN, WIDTH, HEIGHT, {layer: LAYER, stage: STAGE});
 
         // Try init with defaults
-        expect(rectActorWithOptions.setSprite({sprite: SPRITE})).toBeUndefined();
-        expect(rectActorWithOptions.sprite).toBe(SPRITE);
+        expect(rectActorWithOptions.setSprite({sp: SPRITE})).toBeUndefined();
+        expect(rectActorWithOptions.sp).toBe(SPRITE);
         expect(rectActorWithOptions.spriteOffset.x).toBe(0);
         expect(rectActorWithOptions.spriteOffset.y).toBe(0);
         expect(rectActorWithOptions.opacity).toBe(1);
 
-        expect(rectActorWithOptions.pos.x).toBe(ORIGIN.x);
-        expect(rectActorWithOptions.pos.y).toBe(ORIGIN.y);
-        expect(rectActorWithOptions.layer).toBe(LAYER);
-        expect(rectActorWithOptions.stage).toBe(STAGE);
+        expect(rectActorWithOptions.p.x).toBe(ORIGIN.x);
+        expect(rectActorWithOptions.p.y).toBe(ORIGIN.y);
+        expect(rectActorWithOptions.l).toBe(LAYER);
+        expect(rectActorWithOptions.st).toBe(STAGE);
 
         expect(rectActorWithOptions.update(STEP)).toBeUndefined();
-        expect(rectActorWithOptions.sprite.updateFrame).toHaveBeenCalled();
+        expect(rectActorWithOptions.sp.updateFrame).toHaveBeenCalled();
         expect(rectActorWithOptions.render()).toBeUndefined();
-        expect(rectActorWithOptions.sprite.draw).toHaveBeenCalled();
+        expect(rectActorWithOptions.sp.draw).toHaveBeenCalled();
     });
 });
 
 describe("CircleActor", () => {
     const RADIUS = 66;
     let circleActor = new CircleActor(ORIGIN, RADIUS);
-    circleActor.stage = STAGE;
+    circleActor.st = STAGE;
 
     test('is initialised correctly', () => {
-        expect(circleActor.pos.x).toBe(ORIGIN.x);
-        expect(circleActor.pos.y).toBe(ORIGIN.y);
-        expect(circleActor.radius).toBe(RADIUS);
-        expect(circleActor.stage).toBe(STAGE);
+        expect(circleActor.p.x).toBe(ORIGIN.x);
+        expect(circleActor.p.y).toBe(ORIGIN.y);
+        expect(circleActor.r).toBe(RADIUS);
+        expect(circleActor.st).toBe(STAGE);
 
         // Verify defaults
         expect(circleActor.spriteOffset.x).toBe(0);
@@ -109,27 +109,27 @@ describe("CircleActor", () => {
         expect(circleActor.opacity).toBe(1);
     });
 
-    test('adding sprite with additional options', () => {
-        circleActor.stage = STAGE;
+    test('adding s with additional options', () => {
+        circleActor.st = STAGE;
 
-        expect(circleActor.setSprite({sprite: SPRITE, spriteOffset: ORIGIN, opacity: OPACITY})).toBeUndefined();
-        expect(circleActor.sprite).toBe(SPRITE);
+        expect(circleActor.setSprite({sp: SPRITE, spriteOffset: ORIGIN, opacity: OPACITY})).toBeUndefined();
+        expect(circleActor.sp).toBe(SPRITE);
         expect(circleActor.spriteOffset.x).toBe(ORIGIN.x);
         expect(circleActor.spriteOffset.y).toBe(ORIGIN.y);
         expect(circleActor.opacity).toBe(OPACITY);
 
         expect(circleActor.update(STEP)).toBeUndefined();
-        expect(circleActor.sprite.updateFrame).toHaveBeenCalled();
+        expect(circleActor.sp.updateFrame).toHaveBeenCalled();
         expect(circleActor.render()).toBeUndefined();
-        expect(circleActor.sprite.draw).toHaveBeenCalled();
+        expect(circleActor.sp.draw).toHaveBeenCalled();
     });
 
     test('is initialised correctly with options', () => {
         let circleActorWithOptions = new CircleActor(ORIGIN, RADIUS, {layer: LAYER, stage: STAGE});
 
-        expect(circleActorWithOptions.pos.x).toBe(ORIGIN.x);
-        expect(circleActorWithOptions.pos.y).toBe(ORIGIN.y);
-        expect(circleActorWithOptions.layer).toBe(LAYER);
-        expect(circleActorWithOptions.stage).toBe(STAGE);
+        expect(circleActorWithOptions.p.x).toBe(ORIGIN.x);
+        expect(circleActorWithOptions.p.y).toBe(ORIGIN.y);
+        expect(circleActorWithOptions.l).toBe(LAYER);
+        expect(circleActorWithOptions.st).toBe(STAGE);
     });
 });

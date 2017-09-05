@@ -3,7 +3,7 @@ import Maze from './maze';
 import Lantern from './lantern';
 import {TileType} from "./maze_part";
 
-// Move direction
+// Move dr
 enum MoveDir {
     E = 0,
     SE = 45,
@@ -29,16 +29,16 @@ export default class Player extends TSE.RectActor {
     public init(): void {
         this.mouse = {left: false, right: false, pos: null};
         this.debugColour = 'orange';
-        const canvas: HTMLCanvasElement = this.stage.ctx.canvas;
-        // Update mouse pos
+        const canvas: HTMLCanvasElement = this.st.ctx.canvas;
+        // Update mouse p
         canvas.addEventListener('mousemove', (event: MouseEvent) => {
-            const rect = this.stage.ctx.canvas.getBoundingClientRect();
+            const rect = this.st.ctx.canvas.getBoundingClientRect();
             this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
         }, true);
         // Capture click
         canvas.addEventListener('mousedown', (event: MouseEvent) => {
             event.preventDefault();
-            const rect = this.stage.ctx.canvas.getBoundingClientRect();
+            const rect = this.st.ctx.canvas.getBoundingClientRect();
             this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
             this.mouse.left = event.button === 0;
             this.mouse.right = event.button === 2;
@@ -60,10 +60,10 @@ export default class Player extends TSE.RectActor {
     }
 
     protected drawDebug(): void {
-        const ctx = this.stage.ctx;
+        const ctx = this.st.ctx;
         ctx.save();
         ctx.fillStyle = this.debugColour;
-        ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        ctx.fillRect(this.p.x, this.p.y, this.w, this.h);
         ctx.restore();
     }
 
@@ -72,7 +72,7 @@ export default class Player extends TSE.RectActor {
 
         const fraction: number = (step / 100);
         const speed: number = fraction * 24;
-        // Get current direction
+        // Get current dr
         let dir: MoveDir;
 
         if (controls.isPressed(TSE.Controller.keys.W) || controls.isPressed(TSE.Controller.keys.UP)) {
@@ -103,33 +103,33 @@ export default class Player extends TSE.RectActor {
             }
         }
 
-        // No direction, no move
+        // No dr, no move
         if (typeof dir === 'undefined') {
             return;
         }
 
         // Set to new location, with slide
-        this.oldPos = this.pos;
-        const newX = this.pos.x + speed * Math.cos(dir * (Math.PI / 180));
-        this.pos = {x: newX, y: this.pos.y};
+        this.oldPos = this.p;
+        const newX = this.p.x + speed * Math.cos(dir * (Math.PI / 180));
+        this.p = {x: newX, y: this.p.y};
         if (this.maze.isRectActorColliding(this)) {
-            this.pos = this.oldPos;
+            this.p = this.oldPos;
         }
-        this.oldPos = this.pos;
-        const newY = this.pos.y + speed * Math.sin(dir * (Math.PI / 180));
-        this.pos = {x: this.pos.x, y: newY};
+        this.oldPos = this.p;
+        const newY = this.p.y + speed * Math.sin(dir * (Math.PI / 180));
+        this.p = {x: this.p.x, y: newY};
         if (this.maze.isRectActorColliding(this)) {
-            this.pos = this.oldPos;
+            this.p = this.oldPos;
         }
 
         const tile: TileType = this.maze.getTileAtPosition({
-            x: this.pos.x + this.width / 2,
-            y: this.pos.y + this.height / 2
+            x: this.p.x + this.w / 2,
+            y: this.p.y + this.h / 2
         });
 
-        if (tile === TileType.EXIT) {
+        if (tile === TileType.E) {
             console.log('finished');
-            this.stage.finished = true;
+            this.st.finished = true;
         }
     }
 

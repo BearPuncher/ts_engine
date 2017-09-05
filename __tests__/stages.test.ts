@@ -9,19 +9,19 @@ const ACTOR_1: Actor = new ActorMock();
 ACTOR_1.init = jest.fn();
 ACTOR_1.update = jest.fn();
 ACTOR_1.render = jest.fn();
-ACTOR_1.layer = 2;
+ACTOR_1.l = 2;
 
 const ACTOR_2: Actor = new ActorMock();
 ACTOR_2.init = jest.fn();
 ACTOR_2.update = jest.fn();
-ACTOR_2.layer = 1;
+ACTOR_2.l = 1;
 
 describe("Default Stage", () => {
     let defaultStage = new Stage(WIDTH, HEIGHT);
 
     test('is initialised correctly', () => {
-        expect(defaultStage.width).toBe(WIDTH);
-        expect(defaultStage.height).toBe(HEIGHT);
+        expect(defaultStage.w).toBe(WIDTH);
+        expect(defaultStage.h).toBe(HEIGHT);
         expect(defaultStage.ctx).toBe(null);
         expect(defaultStage.finished).toBe(false);
         expect(defaultStage.init()).toBeUndefined();
@@ -32,7 +32,7 @@ describe("Default Stage", () => {
     test('add an actor', () => {
         expect(defaultStage.addActor(ACTOR_1)).toBeUndefined();
         // Verify mock
-        expect(ACTOR_1.stage).toBe(defaultStage);
+        expect(ACTOR_1.st).toBe(defaultStage);
         expect(ACTOR_1.init.mock.calls.length).toBe(1);
     });
 

@@ -15,20 +15,39 @@ export interface IActorOptions {
  * Interface for additional actor properties.
  */
 export interface ISpriteOptions {
-    readonly sprite: Sprite;
+    /**
+     * Sprite.
+     */
+    readonly sp: Sprite;
+    /**
+     * Sprite Offset.
+     */
     readonly spriteOffset?: {x: number, y: number};
     readonly opacity?: number;
 }
 
 /**
  * Basic Actor implementation.
+ *
  */
 export abstract class Actor {
 
-    public pos: IPoint;
-    public layer: number;
-    public stage: Stage;
-    public sprite: Sprite;
+    /**
+     * Position.
+     */
+    public p: IPoint;
+    /**
+     * Layer.
+     */
+    public l: number;
+    /**
+     * Stage.
+     */
+    public st: Stage;
+    /**
+     * Sprite.
+     */
+    public sp: Sprite;
     public spriteOffset: {x: number, y: number};
     public opacity: number;
     public remove: boolean;
@@ -36,25 +55,25 @@ export abstract class Actor {
 
     /**
      * Constructor.
-     * @param origin the start pos
+     * @param origin the start p
      * @param options additional options
      */
     constructor(origin: IPoint, options: IActorOptions) {
-        this.pos = origin;
-        this.layer = (options.layer) ? options.layer : 0;
-        this.stage = (options.stage) ? options.stage : null;
+        this.p = origin;
+        this.l = (options.layer) ? options.layer : 0;
+        this.st = (options.stage) ? options.stage : null;
         this.debugColour = (options.debugColour) ? options.debugColour : 'black';
-        this.sprite = null;
+        this.sp = null;
         this.spriteOffset = {x: 0, y: 0};
         this.opacity = 1;
         this.remove = false;
     }
 
     /**
-     * Set sprite properties for actor.
+     * Set s properties for actor.
      */
     public setSprite(options: ISpriteOptions) {
-        this.sprite = options.sprite;
+        this.sp = options.sp;
         this.spriteOffset = (options.spriteOffset) ? options.spriteOffset : {x: 0, y: 0};
         this.opacity = (options.opacity) ? options.opacity : 1;
     }
@@ -69,21 +88,21 @@ export abstract class Actor {
      * @param step the number of steps
      */
     public update(step: number): void {
-        if (this.sprite) {
-            this.sprite.updateFrame(step);
+        if (this.sp) {
+            this.sp.updateFrame(step);
         }
     }
 
     /**
-     * Render the sprite of the actor, if set.
+     * Render the s of the actor, if set.
      */
     public render(): void {
-        if (this.sprite) {
+        if (this.sp) {
             const point: IPoint = {
-                x: this.pos.x + this.spriteOffset.x,
-                y: this.pos.y + this.spriteOffset.y,
+                x: this.p.x + this.spriteOffset.x,
+                y: this.p.y + this.spriteOffset.y,
             };
-            this.sprite.draw(point, this.stage.ctx, this.opacity);
+            this.sp.draw(point, this.st.ctx, this.opacity);
         }
 
         this.drawDebug();

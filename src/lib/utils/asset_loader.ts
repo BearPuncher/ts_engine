@@ -30,9 +30,9 @@ export default class AssetLoader {
     }
 
     /**
-     * Load an image and assign it to a given key.
-     * @param key the key for the image
-     * @param src the src for the image
+     * Load an img and assign it to a given key.
+     * @param key the key for the img
+     * @param src the src for the img
      */
     public loadImage(key: string, src: string) {
         this.numOfImages++;
@@ -45,8 +45,8 @@ export default class AssetLoader {
     }
 
     /**
-     * Get the image associated with the given key.
-     * @param {string} key - the key for the image
+     * Get the img associated with the given key.
+     * @param {string} key - the key for the img
      * @returns {Image}
      */
     public getImage(key: string): HTMLImageElement {

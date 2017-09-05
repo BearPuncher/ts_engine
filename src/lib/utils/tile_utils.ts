@@ -48,7 +48,7 @@ export class TileMap {
     }
 
     /**
-     * Get the tile's x & y pos.
+     * Get the tile's x & y p.
      */
     public getTilePosition(row: number, col: number): TSE.Math.IPoint {
         return {x: row * this.tileSize, y: col * this.tileSize};
@@ -57,10 +57,10 @@ export class TileMap {
     public getTilesAdjacentToCircleActor(actor: TSE.CircleActor): Tile[] {
         const returnArray: Tile[] = [];
         const tileSize = this.tileSize;
-        let leftTile: number = Math.floor((actor.pos.x - actor.radius) / tileSize);
-        let rightTile: number = Math.floor((actor.pos.x + actor.radius) / tileSize);
-        let topTile: number = Math.floor((actor.pos.y - actor.radius) / tileSize);
-        let bottomTile: number = Math.floor((actor.pos.y + actor.radius) / tileSize);
+        let leftTile: number = Math.floor((actor.p.x - actor.r) / tileSize);
+        let rightTile: number = Math.floor((actor.p.x + actor.r) / tileSize);
+        let topTile: number = Math.floor((actor.p.y - actor.r) / tileSize);
+        let bottomTile: number = Math.floor((actor.p.y + actor.r) / tileSize);
 
         if (leftTile < 0) {
             leftTile = 0;
@@ -92,10 +92,10 @@ export class TileMap {
     public getTilesAdjacentToRectActor(actor: TSE.RectActor): Tile[] {
         const returnArray: Tile[] = [];
         const tileSize = this.tileSize;
-        let leftTile: number = Math.floor(actor.pos.x / tileSize);
-        let rightTile: number = Math.floor((actor.pos.x + actor.width) / tileSize);
-        let topTile: number = Math.floor(actor.pos.y / tileSize);
-        let bottomTile: number = Math.floor((actor.pos.y + actor.height) / tileSize);
+        let leftTile: number = Math.floor(actor.p.x / tileSize);
+        let rightTile: number = Math.floor((actor.p.x + actor.w) / tileSize);
+        let topTile: number = Math.floor(actor.p.y / tileSize);
+        let bottomTile: number = Math.floor((actor.p.y + actor.h) / tileSize);
 
         if (leftTile < 0) {
             leftTile = 0;

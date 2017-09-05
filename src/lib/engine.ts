@@ -16,8 +16,14 @@ export default class Engine {
     private static FRAME_DUR: number = 1000 / Engine.TARGET_FPS;
 
     // Dimensions
-    public width: number;
-    public height: number;
+    /**
+     * Width.
+     */
+    public w: number;
+    /**
+     * Height.
+     */
+    public h: number;
     public currentStage: Stage;
     // Timers
     public running: boolean;
@@ -29,14 +35,14 @@ export default class Engine {
     private transitionFunction: () => void;
 
     /**
-     * Basic constructor taking width, height and a canvas element.
-     * @param {number} width - The width of the canvas.
-     * @param {number} height - The height of the canvas.
+     * Basic constructor taking w, h and a canvas element.
+     * @param {number} width - The w of the canvas.
+     * @param {number} height - The h of the canvas.
      * @param {HTMLCanvasElement} canvas - The canvas element.
      */
     constructor(width: number, height: number, canvas: any) {
-        this.width = width;
-        this.height = height;
+        this.w = width;
+        this.h = height;
 
         // Timing
         this.running = false;

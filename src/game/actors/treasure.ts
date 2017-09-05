@@ -12,10 +12,10 @@ export default class Treasure extends TSE.RectActor {
     }
 
     public render(): void {
-        const ctx: CanvasRenderingContext2D = this.stage.ctx;
+        const ctx: CanvasRenderingContext2D = this.st.ctx;
         ctx.save();
         ctx.fillStyle = this.debugColour;
-        ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+        ctx.fillRect(this.p.x, this.p.y, this.w, this.h);
         ctx.restore();
     }
 }

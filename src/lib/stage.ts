@@ -4,20 +4,26 @@ import {Actor} from './actors/abstract_actor';
  * A currentStage, which can be rendered.
  */
 export default class Stage {
-    public width: number;
-    public height: number;
+    /**
+     * Width.
+     */
+    public w: number;
+    /**
+     * Height.
+     */
+    public h: number;
     public ctx: CanvasRenderingContext2D;
     public finished: boolean;
     private actors: Actor[];
 
     /**
-     * Basic constructor taking currentStage width and height.
-     * @param width {number} - The currentStage width.
-     * @param height {number} - The currentStage height.
+     * Basic constructor taking currentStage w and h.
+     * @param width {number} - The currentStage w.
+     * @param height {number} - The currentStage h.
      */
     constructor(width: number, height: number) {
-        this.width = width;
-        this.height = height;
+        this.w = width;
+        this.h = height;
         this.actors = [];
         this.finished = false;
         this.ctx = null;
@@ -28,7 +34,7 @@ export default class Stage {
      * @param actor {Actor} - The actor to add.
      */
     public addActor(actor: Actor): void {
-        actor.stage = this;
+        actor.st = this;
         actor.init();
 
         this.actors.push(actor);
@@ -70,11 +76,11 @@ export default class Stage {
     }
 
     /**
-     * Sort actor list by layer.
+     * Sort actor list by l.
      */
     private sortActorsByLayer() {
         this.actors.sort((a, b) => {
-            return a.layer - b.layer;
+            return a.l - b.l;
         });
     }
 

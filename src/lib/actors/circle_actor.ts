@@ -6,17 +6,20 @@ import {Actor, IActorOptions} from './abstract_actor';
  */
 export default class CircleActor extends Actor {
 
-    public radius: number;
+    /**
+     * Radius.
+     */
+    public r: number;
 
     /**
      * Constructor.
      * @param origin the Point of origin
-     * @param radius the radius of the circle
+     * @param radius the r of the circle
      * @param options the actor options
      */
     constructor(origin: IPoint, radius: number, options: IActorOptions = {}) {
         super(origin, options);
-        this.radius = radius;
+        this.r = radius;
     }
 
     /**
@@ -30,10 +33,10 @@ export default class CircleActor extends Actor {
      * @inheritDoc
      */
     protected drawDebug() {
-        const ctx = this.stage.ctx;
+        const ctx = this.st.ctx;
         ctx.beginPath();
         ctx.fillStyle = this.debugColour;
-        ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+        ctx.arc(this.p.x, this.p.y, this.r, 0, 2 * Math.PI);
         ctx.fill();
     }
 }

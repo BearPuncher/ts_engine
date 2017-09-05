@@ -8,13 +8,13 @@ export class EndScreen extends TSE.Stage {
         super.render();
         this.ctx.save();
         this.ctx.fillStyle = 'black';
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillRect(0, 0, this.w, this.h);
         this.ctx.font = '30px Arial';
         this.ctx.fillStyle = 'white';
         const halfTextWidth: number = this.ctx.measureText(this.gameOver).width / 2;
         this.ctx.fillText(
-            this.gameOver, this.width / 2 - halfTextWidth,
-            this.height / 2);
+            this.gameOver, this.w / 2 - halfTextWidth,
+            this.h / 2);
         this.ctx.restore();
     }
 }

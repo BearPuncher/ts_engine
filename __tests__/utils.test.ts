@@ -7,22 +7,22 @@ import AssetLoader from '../src/lib/utils/asset_loader';
 describe("AssetLoader", () => {
 
     let assetLoader = new AssetLoader();
-    const imageName = 'image';
+    const imageName = 'img';
 
     test('new returns singleton instance', () => {
         expect(new AssetLoader()).toBe(assetLoader);
     });
 
-    test('load image', () => {
+    test('load img', () => {
         expect(assetLoader.loadImage(imageName, '../assets/images/garota.png')).toBeUndefined();
         expect(assetLoader.getProgress()).toBe(1);
         expect(assetLoader.loadingIsCompleted()).toBe(true);
         expect(assetLoader.getImage(imageName)).toBeDefined();
     });
 
-    test('load invalid image', () => {
+    test('load invalid img', () => {
         expect(() => {
-            assetLoader.getImage('invalid-image')
+            assetLoader.getImage('invalid-img')
         }).toThrow()
     });
 });

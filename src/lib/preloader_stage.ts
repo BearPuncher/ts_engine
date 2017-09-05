@@ -10,9 +10,9 @@ export default class PreloaderStage extends Stage {
     private progress: number;
 
     /**
-     * Basic constructor taking currentStage width and height.
-     * @param {number} width - The currentStage width.
-     * @param {number} height - The currentStage height.
+     * Basic constructor taking currentStage w and h.
+     * @param {number} width - The currentStage w.
+     * @param {number} height - The currentStage h.
      */
     constructor(width: number, height: number) {
         super(width, height);
@@ -47,11 +47,11 @@ export default class PreloaderStage extends Stage {
      */
     private drawProgress() {
         const minX = 20;
-        const maxX = this.width - (minX * 2);
+        const maxX = this.w - (minX * 2);
         const barHeight = 50;
         const fill = maxX * this.progress;
 
-        this.ctx.strokeRect(minX, this.height / 2 - barHeight / 2, maxX, barHeight);
-        this.ctx.fillRect(minX, this.height / 2 - barHeight / 2, fill, barHeight);
+        this.ctx.strokeRect(minX, this.h / 2 - barHeight / 2, maxX, barHeight);
+        this.ctx.fillRect(minX, this.h / 2 - barHeight / 2, fill, barHeight);
     }
 }

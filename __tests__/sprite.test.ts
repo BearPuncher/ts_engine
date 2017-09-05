@@ -5,7 +5,7 @@ const WIDTH = 20, HEIGHT = 40, INTERVAL = 20, CYCLE: [[number, number]] = [[0,0]
 
 const ImageMock = jest.fn<HTMLImageElement>();
 const IMAGE: HTMLImageElement = new ImageMock();
-// Mock drawMazeParts image.
+// Mock drawMazeParts img.
 const CtxMock = jest.fn<CanvasRenderingContext2D>();
 const CTX: CanvasRenderingContext2D = new CtxMock();
 CTX.save = jest.fn();
@@ -20,15 +20,15 @@ describe("Sprite", () => {
     let sprite2 = new Sprite(IMAGE, WIDTH);
 
     test('is initialised correctly', () => {
-        expect(sprite.image).toBe(IMAGE);
-        expect(sprite.width).toBe(WIDTH);
-        expect(sprite.height).toBe(HEIGHT);
+        expect(sprite.img).toBe(IMAGE);
+        expect(sprite.w).toBe(WIDTH);
+        expect(sprite.h).toBe(HEIGHT);
     });
 
-    test('is initialised correctly with just width', () => {
-        expect(sprite2.image).toBe(IMAGE);
-        expect(sprite2.width).toBe(WIDTH);
-        expect(sprite2.height).toBe(WIDTH);
+    test('is initialised correctly with just w', () => {
+        expect(sprite2.img).toBe(IMAGE);
+        expect(sprite2.w).toBe(WIDTH);
+        expect(sprite2.h).toBe(WIDTH);
     });
 
     test('setScale', () => {

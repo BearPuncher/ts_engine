@@ -6,20 +6,23 @@ import {Actor, IActorOptions} from './abstract_actor';
  */
 export default class RectActor extends Actor {
 
-    public width: number;
-    public height: number;
+    /**
+     * Width.
+     */
+    public w: number;
+    public h: number;
 
     /**
      * Constructor.
      * @param origin Point of origin
-     * @param width the width
-     * @param height the height
+     * @param width the w
+     * @param height the h
      * @param options the actor options.
      */
     constructor(origin: IPoint, width: number, height: number, options: IActorOptions = {}) {
         super(origin, options);
-        this.width = width;
-        this.height = height;
+        this.w = width;
+        this.h = height;
     }
 
     /**
@@ -33,17 +36,17 @@ export default class RectActor extends Actor {
      * @inheritDoc
      */
     protected drawDebug() {
-        const ctx = this.stage.ctx;
+        const ctx = this.st.ctx;
         ctx.strokeStyle = this.debugColour;
-        ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
+        ctx.strokeRect(this.p.x, this.p.y, this.w, this.h);
     }
 
     public static rectOverlap(a: RectActor, b: RectActor): boolean {
-        const xOverlap: boolean = this.valueInRange(a.pos.x, b.pos.x, b.pos.x + b.width) ||
-            this.valueInRange(b.pos.x, a.pos.x, a.pos.x + a.width);
+        const xOverlap: boolean = this.valueInRange(a.p.x, b.p.x, b.p.x + b.w) ||
+            this.valueInRange(b.p.x, a.p.x, a.p.x + a.w);
 
-        const yOverlap: boolean = this.valueInRange(a.pos.y, b.pos.y, b.pos.y + b.height) ||
-            this.valueInRange(b.pos.y, a.pos.y, a.pos.y + a.height);
+        const yOverlap: boolean = this.valueInRange(a.p.y, b.p.y, b.p.y + b.h) ||
+            this.valueInRange(b.p.y, a.p.y, a.p.y + a.h);
 
         return xOverlap && yOverlap;
     }
