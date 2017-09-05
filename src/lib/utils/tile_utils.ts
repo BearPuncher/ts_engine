@@ -11,14 +11,17 @@ export interface Tile {
  */
 export class TileMap {
 
-    public rows: number;
-    public cols: number;
-    public tileSize: number;
+    public rw: number;
+    public cl: number;
+    /**
+     * Tile Size.
+     */
+    public tSz: number;
     public tiles: any[];
 
     /**
      * Constructor.
-     * @param {number} rows the number of rows
+     * @param {number} rows the number of rw
      * @param {number} cols the number of columns
      * @param {number} tileSize the tile size
      * @param {[number]} tiles the tiles
@@ -27,9 +30,9 @@ export class TileMap {
         if (tiles.length !== rows * cols) {
             throw Error('tiles supplied not expected size.');
         }
-        this.rows = rows;
-        this.cols = cols;
-        this.tileSize = tileSize;
+        this.rw = rows;
+        this.cl = cols;
+        this.tSz = tileSize;
         this.tiles = tiles;
     }
 
@@ -37,26 +40,26 @@ export class TileMap {
      * Get the number of a tile.
      */
     public getTile(row: number, col: number): any {
-        return this.tiles[row * this.cols + col];
+        return this.tiles[row * this.cl + col];
     }
 
     /**
      * Get the number of a tile.
      */
     public setTile(row: number, col: number, tile: any) {
-        this.tiles[row * this.cols + col] = tile;
+        this.tiles[row * this.cl + col] = tile;
     }
 
     /**
      * Get the tile's x & y p.
      */
     public getTilePosition(row: number, col: number): TSE.Math.IPoint {
-        return {x: row * this.tileSize, y: col * this.tileSize};
+        return {x: row * this.tSz, y: col * this.tSz};
     }
 
     public getTilesAdjacentToCircleActor(actor: TSE.CircleActor): Tile[] {
         const returnArray: Tile[] = [];
-        const tileSize = this.tileSize;
+        const tileSize = this.tSz;
         let leftTile: number = Math.floor((actor.p.x - actor.r) / tileSize);
         let rightTile: number = Math.floor((actor.p.x + actor.r) / tileSize);
         let topTile: number = Math.floor((actor.p.y - actor.r) / tileSize);
@@ -66,16 +69,16 @@ export class TileMap {
             leftTile = 0;
         }
 
-        if (rightTile > this.cols - 1) {
-            rightTile = this.cols - 1;
+        if (rightTile > this.cl - 1) {
+            rightTile = this.cl - 1;
         }
 
         if (topTile < 0) {
             topTile = 0;
         }
 
-        if (bottomTile > this.rows - 1) {
-            bottomTile = this.rows - 1;
+        if (bottomTile > this.rw - 1) {
+            bottomTile = this.rw - 1;
         }
 
         for (let i = leftTile; i <= rightTile; i++) {
@@ -91,7 +94,7 @@ export class TileMap {
 
     public getTilesAdjacentToRectActor(actor: TSE.RectActor): Tile[] {
         const returnArray: Tile[] = [];
-        const tileSize = this.tileSize;
+        const tileSize = this.tSz;
         let leftTile: number = Math.floor(actor.p.x / tileSize);
         let rightTile: number = Math.floor((actor.p.x + actor.w) / tileSize);
         let topTile: number = Math.floor(actor.p.y / tileSize);
@@ -101,16 +104,16 @@ export class TileMap {
             leftTile = 0;
         }
 
-        if (rightTile > this.cols - 1) {
-            rightTile = this.cols - 1;
+        if (rightTile > this.cl - 1) {
+            rightTile = this.cl - 1;
         }
 
         if (topTile < 0) {
             topTile = 0;
         }
 
-        if (bottomTile > this.rows - 1) {
-            bottomTile = this.rows - 1;
+        if (bottomTile > this.rw - 1) {
+            bottomTile = this.rw - 1;
         }
 
         for (let i = leftTile; i <= rightTile; i++) {
@@ -129,10 +132,10 @@ export class TileMap {
     public drawDebug(ctx: CanvasRenderingContext2D): void {
         ctx.save();
 
-        for (let i = 0; i < this.rows; i++) {
-            for (let j = 0; j < this.cols; j++) {
-                const x = j * this.tileSize;
-                const y = i * this.tileSize;
+        for (let i = 0; i < this.rw; i++) {
+            for (let j = 0; j < this.cl; j++) {
+                const x = j * this.tSz;
+                const y = i * this.tSz;
                 const tile: number = this.getTile(i, j);
                 if (tile === 0) {
                     ctx.strokeStyle = 'white';
@@ -141,7 +144,7 @@ export class TileMap {
                 } else if (tile >= 2) {
                     ctx.strokeStyle = 'black';
                 }
-                ctx.strokeRect(x, y, this.tileSize, this.tileSize);
+                ctx.strokeRect(x, y, this.tSz, this.tSz);
 
             }
         }

@@ -1,9 +1,9 @@
 import * as TSE from '../../lib';
 
+/**
+ * Wall, PATH, RAMP, OVERPASS, EX.
+ */
 export enum TileType {
-    /**
-     * Wall, PATH, RAMP, OVERPASS, EXIT.
-     */
     W = 0,
     P = 1,
     R = 2,
@@ -137,12 +137,13 @@ export class MazePart {
             for (let col = 0; col < this.di; col++) {
                 const tile: MazeTile = this.ly.getTile(row, col);
                 if (!tile.seen) {
-                    const tileSize: number = this.ly.tileSize;
+                    const tileSize: number = this.ly.tSz;
                     const x: number = tileSize * col;
                     const y: number = tileSize * row;
                     ctx.fillStyle = 'black';
-                    ctx.lineWidth = 0;
-                    ctx.fillRect(x, y, this.ly.tileSize, this.ly.tileSize);
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 1;
+                    ctx.fillRect(x, y, this.ly.tSz, this.ly.tSz);
                 }
             }
         }
@@ -174,14 +175,17 @@ export class MazePart {
     }
 }
 
+/**
+ * Corner, Cross, Dead end, Double Corner, Exit, Straight, T-bone, Overpass.
+ */
 export enum MazePartType {
-    CORNER = 0,
-    CROSS,
-    DEAD_END,
+    CO = 0,
+    CR,
+    DE,
     DOUBLE_CORNER,
-    EXIT,
-    STRAIGHT,
-    T_BONE,
+    EX,
+    ST,
+    TB,
     OVERPASS,
 }
 
@@ -189,27 +193,27 @@ export const MazePartFactory = {
     create: (type: MazePartType, rotate: number, canRotate: boolean): MazePart => {
         let mazepart: MazePart;
         switch (type) {
-            case MazePartType.CORNER:
+            case MazePartType.CO:
                 mazepart = new MazePart(TileLayouts.CORNER);
                 mazepart.s.setCycle([[0, 0]], 0);
                 break;
-            case MazePartType.CROSS:
+            case MazePartType.CR:
                 mazepart = new MazePart(TileLayouts.CROSS);
                 mazepart.s.setCycle([[1, 0]], 0);
                 break;
-            case MazePartType.DEAD_END:
+            case MazePartType.DE:
                 mazepart = new MazePart(TileLayouts.DEAD_END);
                 mazepart.s.setCycle([[2, 0]], 0);
                 break;
-            case MazePartType.EXIT:
+            case MazePartType.EX:
                 mazepart = new MazePart(TileLayouts.EXIT);
                 mazepart.s.setCycle([[3, 0]], 0);
                 break;
-            case MazePartType.STRAIGHT:
+            case MazePartType.ST:
                 mazepart = new MazePart(TileLayouts.STRAIGHT);
                 mazepart.s.setCycle([[4, 0]], 0);
                 break;
-            case MazePartType.T_BONE:
+            case MazePartType.TB:
                 mazepart = new MazePart(TileLayouts.T_BONE);
                 mazepart.s.setCycle([[5, 0]], 0);
                 break;

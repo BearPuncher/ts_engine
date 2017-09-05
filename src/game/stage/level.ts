@@ -57,9 +57,9 @@ export abstract class Level extends TSE.Stage {
             const standing: MazePart = this.m.getMazePartAtPosition(this.p1.p);
 
             const dX: number = Math.abs(
-                Math.floor(pos.x / this.m.mazePartSize) - Math.floor(this.p1.p.x / this.m.mazePartSize));
+                Math.floor(pos.x / this.m.mpS) - Math.floor(this.p1.p.x / this.m.mpS));
             const dY: number = Math.abs(
-                Math.floor(pos.y / this.m.mazePartSize) - Math.floor(this.p1.p.y / this.m.mazePartSize));
+                Math.floor(pos.y / this.m.mpS) - Math.floor(this.p1.p.y / this.m.mpS));
 
             const adjacent: boolean = (dX === 0 && dY === 1) || (dX === 1 && dY === 0);
 
@@ -68,12 +68,12 @@ export abstract class Level extends TSE.Stage {
                 if (selected !== standing) {
                     if (selected.rotates) {
                         cursor = 'pointer';
-                        if (this.p1.mouse) {
-                            if (this.p1.mouse.left) {
+                        if (this.p1.ms) {
+                            if (this.p1.ms.l) {
                                 this.m.needsUpdate = true;
                                 selected.rotateLeft();
                             }
-                            if (this.p1.mouse.right) {
+                            if (this.p1.ms.r) {
                                 this.m.needsUpdate = true;
                                 selected.rotateRight();
                             }
@@ -136,10 +136,10 @@ export abstract class Level extends TSE.Stage {
     }
 
     private getMousePosition(): TSE.Math.IPoint {
-        if (!this.p1.mouse.pos) {
+        if (!this.p1.ms.p) {
             return null;
         }
-        return {x: this.p1.mouse.pos.x - this.camera.x,
-            y: this.p1.mouse.pos.y - this.camera.y};
+        return {x: this.p1.ms.p.x - this.camera.x,
+            y: this.p1.ms.p.y - this.camera.y};
     }
 }

@@ -22,29 +22,34 @@ export default class Player extends TSE.RectActor {
 
     public lantern: Lantern;
     public maze: Maze;
-    // TODO: combine all mouse things under mouse interface.
-    public mouse: {left: boolean, right: boolean, pos: TSE.Math.IPoint};
-    private oldPos: TSE.Math.IPoint;
+    /**
+     * Mouse status.
+     */
+    public ms: {l: boolean, r: boolean, p: TSE.Math.IPoint};
+    /**
+     * Old position.
+     */
+    private oldP: TSE.Math.IPoint;
 
     public init(): void {
-        this.mouse = {left: false, right: false, pos: null};
+        this.ms = {l: false, r: false, p: null};
         this.debugColour = 'orange';
         const canvas: HTMLCanvasElement = this.st.ctx.canvas;
-        // Update mouse p
+        // Update ms p
         canvas.addEventListener('mousemove', (event: MouseEvent) => {
             const rect = this.st.ctx.canvas.getBoundingClientRect();
-            this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            this.ms.p = {x: event.clientX - rect.left, y: event.clientY - rect.top};
         }, true);
         // Capture click
         canvas.addEventListener('mousedown', (event: MouseEvent) => {
             event.preventDefault();
             const rect = this.st.ctx.canvas.getBoundingClientRect();
-            this.mouse.pos = {x: event.clientX - rect.left, y: event.clientY - rect.top};
-            this.mouse.left = event.button === 0;
-            this.mouse.right = event.button === 2;
+            this.ms.p = {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            this.ms.l = event.button === 0;
+            this.ms.r = event.button === 2;
         }, true);
 
-        // Prevent right click menu
+        // Prevent r click menu
         canvas.oncontextmenu = (event) => {
             event.preventDefault();
         };
@@ -55,8 +60,8 @@ export default class Player extends TSE.RectActor {
         this.doMove(step);
         this.maze.setAdjacentTilesSeen(this.lantern);
         this.lantern.updatePosition();
-        this.mouse.left = false;
-        this.mouse.right = false;
+        this.ms.l = false;
+        this.ms.r = false;
     }
 
     protected drawDebug(): void {
@@ -109,17 +114,17 @@ export default class Player extends TSE.RectActor {
         }
 
         // Set to new location, with slide
-        this.oldPos = this.p;
+        this.oldP = this.p;
         const newX = this.p.x + speed * Math.cos(dir * (Math.PI / 180));
         this.p = {x: newX, y: this.p.y};
         if (this.maze.isRectActorColliding(this)) {
-            this.p = this.oldPos;
+            this.p = this.oldP;
         }
-        this.oldPos = this.p;
+        this.oldP = this.p;
         const newY = this.p.y + speed * Math.sin(dir * (Math.PI / 180));
         this.p = {x: this.p.x, y: newY};
         if (this.maze.isRectActorColliding(this)) {
-            this.p = this.oldPos;
+            this.p = this.oldP;
         }
 
         const tile: TileType = this.maze.getTileAtPosition({
