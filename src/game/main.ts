@@ -1,6 +1,7 @@
 import * as TSE from '../lib';
 import Level1 from './stage/level_1';
 import {EndScreen} from "./stage/end_screen";
+import Level2 from "./stage/level_2";
 
 const WIDTH: number = 640;
 const HEIGHT: number = 480;
@@ -18,6 +19,8 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
         if (engine.currentStage instanceof TSE.PreloaderStage) {
             initLevelOne();
         } else if (engine.currentStage instanceof Level1) {
+            initLevelTwo();
+        }  else if (engine.currentStage instanceof Level2) {
             initGameOver();
         }
     });
@@ -27,6 +30,10 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
 
 function initLevelOne(): void {
     ENGINE.setStage(new Level1(WIDTH, HEIGHT));
+}
+
+function initLevelTwo(): void {
+    ENGINE.setStage(new Level2(WIDTH, HEIGHT));
 }
 
 function initGameOver(): void {

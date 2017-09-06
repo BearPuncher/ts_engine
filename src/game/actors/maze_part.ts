@@ -1,7 +1,7 @@
 import * as TSE from '../../lib';
 
 /**
- * Wall, PATH, RAMP, OVERPASS, EX.
+ * Wall, PATH, RAMP, O, EX.
  */
 export enum TileType {
     W = 0,
@@ -11,7 +11,7 @@ export enum TileType {
     E = 9,
 }
 
-export interface MazeTile {
+export interface IMazeTile {
     type: TileType;
     seen: boolean;
 }
@@ -135,15 +135,15 @@ export class MazePart {
 
         for (let row = 0; row < this.di; row++) {
             for (let col = 0; col < this.di; col++) {
-                const tile: MazeTile = this.ly.getTile(row, col);
+                const tile: IMazeTile = this.ly.getTile(row, col);
                 if (!tile.seen) {
                     const tileSize: number = this.ly.tSz;
                     const x: number = tileSize * col;
                     const y: number = tileSize * row;
-                    ctx.fillStyle = 'black';
                     ctx.strokeStyle = 'black';
-                    ctx.lineWidth = 1;
-                    ctx.fillRect(x, y, this.ly.tSz, this.ly.tSz);
+                    ctx.lineWidth = 3;
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(x - 1, y - 1, this.ly.tSz + 2, this.ly.tSz + 2);
                 }
             }
         }
@@ -166,8 +166,8 @@ export class MazePart {
         ctx.restore();
     }
 
-    private populateFromTileLayouts(tilesLayout: number[]): MazeTile[] {
-        const returnArray: MazeTile[] = [];
+    private populateFromTileLayouts(tilesLayout: number[]): IMazeTile[] {
+        const returnArray: IMazeTile[] = [];
         for (const tile of tilesLayout) {
             returnArray.push({type: tile, seen: false});
         }
@@ -182,11 +182,11 @@ export enum MazePartType {
     CO = 0,
     CR,
     DE,
-    DOUBLE_CORNER,
+    DC,
     EX,
     ST,
     TB,
-    OVERPASS,
+    O,
 }
 
 export const MazePartFactory = {
@@ -217,10 +217,10 @@ export const MazePartFactory = {
                 mazepart = new MazePart(TileLayouts.T_BONE);
                 mazepart.s.setCycle([[5, 0]], 0);
                 break;
-            case MazePartType.OVERPASS:
+            case MazePartType.O:
                 mazepart = new MazePart(TileLayouts.OVERPASS);
                 break;
-            case MazePartType.DOUBLE_CORNER:
+            case MazePartType.DC:
                 mazepart = new MazePart(TileLayouts.DOUBLE_CORNER);
                 break;
             default:

@@ -4,6 +4,8 @@ import {MazePart} from '../actors/maze_part';
 import Player from '../actors/player';
 import Treasure from "../actors/treasure";
 import * as TinyMusic from '../../../node_modules/tinymusic';
+import {pushd} from "shelljs";
+import {IPoint} from "../../lib/utils/math";
 
 // TODO: drawMazeParts shadows around circle
 // TODO: change tilemap to keep tyle info
@@ -56,31 +58,51 @@ export abstract class Level extends TSE.Stage {
             const selected: MazePart = this.m.getMazePartAtPosition(pos);
             const standing: MazePart = this.m.getMazePartAtPosition(this.p1.p);
 
+            // TODO: Get standing mazeTile center
+            // TODO: rotate player position round mazeTIle center if selected === standing
+
+            const col: number = Math.floor(this.p1.p.x / this.m.mpS);
+            const row: number = Math.floor(this.p1.p.y / this.m.mpS);
+
             const dX: number = Math.abs(
-                Math.floor(pos.x / this.m.mpS) - Math.floor(this.p1.p.x / this.m.mpS));
+                Math.floor(pos.x / this.m.mpS) - col);
             const dY: number = Math.abs(
-                Math.floor(pos.y / this.m.mpS) - Math.floor(this.p1.p.y / this.m.mpS));
+                Math.floor(pos.y / this.m.mpS) - row);
 
             const adjacent: boolean = (dX === 0 && dY === 1) || (dX === 1 && dY === 0);
+            //const adjacent: boolean = (dX >= 0 && dY <= 1) || (dX >= 1 && dY <= 0);
 
-            if (selected && adjacent) {
-                // If standing on m part
-                if (selected !== standing) {
-                    if (selected.rotates) {
-                        cursor = 'pointer';
-                        if (this.p1.ms) {
-                            if (this.p1.ms.l) {
-                                this.m.needsUpdate = true;
-                                selected.rotateLeft();
-                            }
-                            if (this.p1.ms.r) {
-                                this.m.needsUpdate = true;
-                                selected.rotateRight();
-                            }
+            if (selected && standing && adjacent) {
+                standing.actionable = true;
+
+                if (selected.rotates) {
+                    cursor = 'pointer';
+                    if (this.p1.ms) {
+
+                        /*const tileCenter: IPoint = {
+                            x: col * this.m.mpS + this.m.mpS / 2,
+                            y: row + this.m.mpS + this.m.mpS / 2
+                        };*/
+
+                        if (this.p1.ms.l) {
+                            this.m.needsUpdate = true;
+                            selected.rotateLeft();
+                            // Rotate if standing on
+                            /*if (selected === standing) {
+                                this.p1.p = TSE.Math.rotatePoint(tileCenter, 90, this.p1.p);
+                            }*/
+                        }
+                        if (this.p1.ms.r) {
+                            this.m.needsUpdate = true;
+                            selected.rotateRight();
+                            // Rotate if standing on
+                            /*if (selected === standing) {
+                                this.p1.p = TSE.Math.rotatePoint(tileCenter, -90, this.p1.p);
+                            }*/
                         }
                     }
-                    selected.hovered = true;
                 }
+                selected.hovered = true;
             } else if (selected === standing) {
                 if (selected.rotates) {
                     cursor = 'not-allowed';

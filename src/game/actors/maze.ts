@@ -1,5 +1,5 @@
 import * as TSE from '../../lib';
-import {MazePart, MazeTile, TileType} from './maze_part';
+import {MazePart, IMazeTile, TileType} from './maze_part';
 
 /**
  * The m.
@@ -217,7 +217,7 @@ export default class Maze extends TSE.RectActor {
         this.iterateMazeParts((part: MazePart, row: number, col: number) => {
             for (let innerRow = 0; innerRow < part.di; innerRow++) {
                 for (let innerCol = 0; innerCol < part.di; innerCol++) {
-                    const tile: MazeTile = part.ly.getTile(innerRow, innerCol);
+                    const tile: IMazeTile = part.ly.getTile(innerRow, innerCol);
                     this.tileMap.setTile(row * part.di + innerRow,
                         col * part.di + innerCol, tile.type);
                 }
