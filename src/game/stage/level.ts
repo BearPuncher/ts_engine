@@ -1,11 +1,44 @@
 import * as TSE from '../../lib';
 import Maze from '../actors/maze';
-import {MazePart} from '../actors/maze_part';
+import {MazePart, MazePartFactory, MazePartType} from '../actors/maze_part';
 import Player from '../actors/player';
 import Treasure from "../actors/treasure";
 import * as TinyMusic from '../../../node_modules/tinymusic';
-import {pushd} from "shelljs";
-import {IPoint} from "../../lib/utils/math";
+
+/**
+ export enum MazePartType {
+    CO = 0,
+    CR, 1
+    DE, 2
+    DC, 3
+    EX, 4
+    ST, 5
+    TB, 6
+    O, 7
+}**/
+
+interface IMazePartData {
+    t: MazePartType;
+    r: number;
+    cr: boolean;
+}
+
+// {t: , r: , cr: }
+
+export const MAP_LAYOUTS = [
+    [
+        [[MazePartType.CO, 1, false], [MazePartType.DE, 3, false], [MazePartType.DE, 2, false], [MazePartType.EX, 2, false]],
+        [[MazePartType.TB, 0, true], [MazePartType.ST, 1, false], [MazePartType.CO, 3, false], [MazePartType.ST, 1, true]],
+        [[MazePartType.ST, 0, false], [MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.TB, 3, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
+    ],
+    [
+        [[MazePartType.DE, 2, false], [MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.CR, 0, false], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
+        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.DE, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false], [MazePartType.EX, 3, false]],
+    ],
+];
 
 // TODO: drawMazeParts shadows around circle
 // TODO: change tilemap to keep tyle info
@@ -155,6 +188,21 @@ export abstract class Level extends TSE.Stage {
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'white';
         ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
+    }
+
+    protected setMapPartsFromLevel(level: number): void {
+        const mazeParts: MazePart[][] = [];
+
+        let row: number = 0;
+        for (let array of MAP_LAYOUTS[level]) {
+            mazeParts[row] = [];
+            for (let col = 0; col < array.length; col++) {
+                const data = array[col];
+                mazeParts[row][col] = MazePartFactory.create(Number(data[0]), Number(data[1]), Boolean(data[2]));
+            }
+            row++;
+        }
+        this.m.setMazeParts(mazeParts);
     }
 
     private getMousePosition(): TSE.Math.IPoint {

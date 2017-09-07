@@ -39,6 +39,7 @@ function initLevelTwo(): void {
 function initGameOver(): void {
     ENGINE.setStage(new EndScreen(WIDTH, HEIGHT));
 }
+// TODO: write JSON parser, move stages tiling to JSON doc
 
 const ENGINE: TSE.Engine = setupEngine(WIDTH, HEIGHT, CANVAS);
 ENGINE.start();
