@@ -23,8 +23,6 @@ interface IMazePartData {
     cr: boolean;
 }
 
-// {t: , r: , cr: }
-
 export const MAP_LAYOUTS = [
     [
         [[MazePartType.CO, 1, false], [MazePartType.DE, 3, false], [MazePartType.DE, 2, false], [MazePartType.EX, 2, false]],
@@ -35,8 +33,8 @@ export const MAP_LAYOUTS = [
     [
         [[MazePartType.DE, 2, false], [MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
         [[MazePartType.CO, 0, false], [MazePartType.CR, 0, false], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
-        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.DE, 2, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false], [MazePartType.EX, 3, false]],
+        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.EX, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
     ],
 ];
 
@@ -188,6 +186,12 @@ export abstract class Level extends TSE.Stage {
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'white';
         ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
+    }
+
+    protected createTreasure(point: TSE.Math.IPoint) {
+        const treasure = new Treasure(point);
+        this.treasures.push(treasure);
+        super.addActor(treasure);
     }
 
     protected setMapPartsFromLevel(level: number): void {

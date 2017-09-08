@@ -2,14 +2,12 @@ import * as TSE from '../../lib';
 import {Level} from './level';
 import Player from '../actors/player';
 import Maze from '../actors/maze';
-import {MazePart, MazePartType, MazePartFactory} from '../actors/maze_part';
 import Lantern from '../actors/lantern';
 import Treasure from '../actors/treasure';
 
 const WIDTH: number = 512;
 const HEIGHT: number = 512;
 const TILE_SIZE: number = 128;
-const LEVEL: string = "level1";
 
 export default class Level1 extends Level {
 
@@ -23,13 +21,8 @@ export default class Level1 extends Level {
         super.addActor(this.p1);
         this.p1.maze = this.m;
 
-        const treasure = new Treasure({x: 308, y: 48});
-        this.treasures.push(treasure);
-        super.addActor(treasure);
-
-        const treasure2 = new Treasure({x: 432, y: 432});
-        this.treasures.push(treasure2);
-        super.addActor(treasure2);
+        this.createTreasure({x: 308, y: 48});
+        this.createTreasure({x: 576, y: 432});
 
         const lantern = new Lantern(this.p1, 36);
         super.addActor(lantern);

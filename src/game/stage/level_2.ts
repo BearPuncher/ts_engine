@@ -22,13 +22,8 @@ export default class Level2 extends Level {
         super.addActor(this.p1);
         this.p1.maze = this.m;
 
-        const treasure = new Treasure({x: 308, y: 48});
-        this.treasures.push(treasure);
-        super.addActor(treasure);
-
-        const treasure2 = new Treasure({x: 432, y: 432});
-        this.treasures.push(treasure2);
-        super.addActor(treasure2);
+        this.createTreasure({x: 560, y: 176});
+        this.createTreasure({x: 304, y: 432});
 
         const lantern = new Lantern(this.p1, 36);
         super.addActor(lantern);
