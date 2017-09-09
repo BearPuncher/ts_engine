@@ -2,20 +2,8 @@ import * as TSE from '../../lib';
 import Maze from '../actors/maze';
 import {MazePart, MazePartFactory, MazePartType} from '../actors/maze_part';
 import Player from '../actors/player';
-import Treasure from "../actors/treasure";
+import Treasure from '../actors/treasure';
 import * as TinyMusic from '../../../node_modules/tinymusic';
-
-/**
- export enum MazePartType {
-    CO = 0,
-    CR, 1
-    DE, 2
-    DC, 3
-    EX, 4
-    ST, 5
-    TB, 6
-    O, 7
-}**/
 
 interface IMazePartData {
     t: MazePartType;
@@ -90,7 +78,6 @@ export abstract class Level extends TSE.Stage {
             const standing: MazePart = this.m.getMazePartAtPosition(this.p1.p);
 
             // TODO: Get standing mazeTile center
-            // TODO: rotate player position round mazeTIle center if selected === standing
 
             const col: number = Math.floor(this.p1.p.x / this.m.mpS);
             const row: number = Math.floor(this.p1.p.y / this.m.mpS);
@@ -178,6 +165,7 @@ export abstract class Level extends TSE.Stage {
         ctx.translate(cX, cY);
         this.camera = {x: cX, y: cY};
         super.render();
+        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r);
         this.m.drawMazePostEffects();
         ctx.restore();
 

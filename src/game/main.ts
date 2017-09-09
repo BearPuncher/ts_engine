@@ -1,7 +1,7 @@
 import * as TSE from '../lib';
+import {EndScreen} from './stage/end_screen';
 import Level1 from './stage/level_1';
-import {EndScreen} from "./stage/end_screen";
-import Level2 from "./stage/level_2";
+import Level2 from './stage/level_2';
 
 const WIDTH: number = 640;
 const HEIGHT: number = 480;

@@ -132,7 +132,7 @@ export class MazePart {
         ctx.save();
         ctx.translate(xOffset, yOffset);
         this.s.draw({x: 0, y: 0}, ctx);
-        /*
+        /**
         for (let row = 0; row < this.di; row++) {
             for (let col = 0; col < this.di; col++) {
                 const tile: IMazeTile = this.ly.getTile(row, col);
@@ -146,7 +146,7 @@ export class MazePart {
                     ctx.fillRect(x - 1, y - 1, this.ly.tSz + 2, this.ly.tSz + 2);
                 }
             }
-        }*/
+        }**/
 
         ctx.restore();
     }

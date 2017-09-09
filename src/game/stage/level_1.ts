@@ -1,8 +1,8 @@
 import * as TSE from '../../lib';
 import {Level} from './level';
-import Player from '../actors/player';
-import Maze from '../actors/maze';
 import Lantern from '../actors/lantern';
+import Maze from '../actors/maze';
+import Player from '../actors/player';
 import Treasure from '../actors/treasure';
 
 const WIDTH: number = 512;
@@ -27,5 +27,4 @@ export default class Level1 extends Level {
         const lantern = new Lantern(this.p1, 36);
         super.addActor(lantern);
     }
-
 }

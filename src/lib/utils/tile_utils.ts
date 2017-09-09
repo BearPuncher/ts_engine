@@ -1,6 +1,6 @@
 import * as TSE from '../../lib';
 
-export interface Tile {
+export interface ITile {
     value: any;
     row: number;
     col: number;
@@ -14,7 +14,7 @@ export class TileMap {
     public rw: number;
     public cl: number;
     /**
-     * Tile Size.
+     * ITile Size.
      */
     public tSz: number;
     public tiles: any[];
@@ -57,8 +57,8 @@ export class TileMap {
         return {x: row * this.tSz, y: col * this.tSz};
     }
 
-    public getTilesAdjacentToCircleActor(actor: TSE.CircleActor): Tile[] {
-        const returnArray: Tile[] = [];
+    public getTilesAdjacentToCircleActor(actor: TSE.CircleActor): ITile[] {
+        const returnArray: ITile[] = [];
         const tileSize = this.tSz;
         let leftTile: number = Math.floor((actor.p.x - actor.r) / tileSize);
         let rightTile: number = Math.floor((actor.p.x + actor.r) / tileSize);
@@ -84,7 +84,7 @@ export class TileMap {
         for (let i = leftTile; i <= rightTile; i++) {
             for (let j = topTile; j <= bottomTile; j++) {
                 const value = this.getTile(j, i);
-                returnArray.push({value: value, row: j, col: i});
+                returnArray.push({value, row: j, col: i});
 
             }
         }
@@ -92,8 +92,8 @@ export class TileMap {
         return returnArray;
     }
 
-    public getTilesAdjacentToRectActor(actor: TSE.RectActor): Tile[] {
-        const returnArray: Tile[] = [];
+    public getTilesAdjacentToRectActor(actor: TSE.RectActor): ITile[] {
+        const returnArray: ITile[] = [];
         const tileSize = this.tSz;
         let leftTile: number = Math.floor(actor.p.x / tileSize);
         let rightTile: number = Math.floor((actor.p.x + actor.w) / tileSize);
@@ -119,7 +119,7 @@ export class TileMap {
         for (let i = leftTile; i <= rightTile; i++) {
             for (let j = topTile; j <= bottomTile; j++) {
                 const value = this.getTile(j, i);
-                returnArray.push({value: value, row: j, col: i});
+                returnArray.push({value, row: j, col: i});
             }
         }
 

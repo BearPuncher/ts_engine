@@ -32,15 +32,6 @@ export default class RectActor extends Actor {
         // Do nothing.
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected drawDebug() {
-        const ctx = this.st.ctx;
-        ctx.strokeStyle = this.debugColour;
-        ctx.strokeRect(this.p.x, this.p.y, this.w, this.h);
-    }
-
     public static rectOverlap(a: RectActor, b: RectActor): boolean {
         const xOverlap: boolean = this.valueInRange(a.p.x, b.p.x, b.p.x + b.w) ||
             this.valueInRange(b.p.x, a.p.x, a.p.x + a.w);
@@ -49,6 +40,15 @@ export default class RectActor extends Actor {
             this.valueInRange(b.p.y, a.p.y, a.p.y + a.h);
 
         return xOverlap && yOverlap;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected drawDebug() {
+        const ctx = this.st.ctx;
+        ctx.strokeStyle = this.debugColour;
+        ctx.strokeRect(this.p.x, this.p.y, this.w, this.h);
     }
 
     private static valueInRange(value: number, min: number, max: number): boolean {

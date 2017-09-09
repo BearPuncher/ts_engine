@@ -1,5 +1,6 @@
 import * as TSE from '../../lib';
-import {MazePart, IMazeTile, TileType} from './maze_part';
+import {IMazeTile, MazePart, TileType} from './maze_part';
+import {IPoint} from "../../lib/utils/math";
 
 /**
  * The m.
@@ -61,7 +62,7 @@ export default class Maze extends TSE.RectActor {
         }
     }
 
-    public iterateMazeParts(callback: Function): void {
+    public iterateMazeParts(callback: (part: MazePart, row: number, col: number) => void): void {
         for (let row = 0; row < this.ptMp.length; row++) {
             for (let col = 0; col < this.ptMp[row].length; col++) {
                 callback(this.ptMp[row][col], row, col);
@@ -84,6 +85,32 @@ export default class Maze extends TSE.RectActor {
             const length: number = part.lg;
             part.drawMazeParts(col * length, row * length, this.st.ctx);
         });
+    }
+
+    public drawShadows(lightSource: TSE.Math.IPoint, radius: number): void {
+        const tileLocation = this.translatePointToTile(lightSource);
+        const dist: number = Math.ceil(radius / this.tileMap.tSz) + 1;
+        const shadowDepth: number = dist * this.tileMap.tSz;
+        const startX: number = (tileLocation.col - dist < 0) ? 0 : tileLocation.col - dist;
+        const startY: number = (tileLocation.row - dist < 0) ? 0 : tileLocation.row - dist;
+
+        const stopX: number  = (tileLocation.col + dist > this.tileMap.cl) ? this.tileMap.cl : tileLocation.col + dist;
+        const stopY: number  = (tileLocation.row + dist > this.tileMap.rw) ? this.tileMap.rw : tileLocation.row + dist;
+
+        const ctx: CanvasRenderingContext2D = this.st.ctx;
+
+        for(let i = startX; i < stopX; i++) {
+            for (let j = startY; j < stopY; j++) {
+                const tile = this.tileMap.getTile(j, i);
+                if (tile === TileType.W) {
+                    const tileSize: number = this.tileMap.tSz;
+                    const x: number = tileSize * i;
+                    const y: number = tileSize * j;
+
+                    this.drawWallShadow(lightSource, x, y, shadowDepth);
+                }
+            }
+        }
     }
 
     public drawMazePostEffects(): void {
@@ -136,14 +163,8 @@ export default class Maze extends TSE.RectActor {
     }
 
     public getTileAtPosition(pos: TSE.Math.IPoint): any {
-        if (pos.x < 0 || pos.x > this.w ||
-            pos.y < 0 || pos.y > this.h) {
-            return null;
-        }
-        const currentRow: number = Math.floor(pos.y / this.tileMap.tSz);
-        const currentCol: number = Math.floor(pos.x / this.tileMap.tSz);
-
-        return this.tileMap.getTile(currentRow, currentCol);
+        const loc = this.translatePointToTile(pos);
+        return this.tileMap.getTile(loc.row, loc.col);
     }
 
     // This some hacky bullshit
@@ -177,12 +198,12 @@ export default class Maze extends TSE.RectActor {
                 // TODO: Fix this hacky bullcrap
                 const circleActor = new TSE.CircleActor({
                     x: actor.p.x - i * this.mpS,
-                    y: actor.p.y - j * this.mpS
+                    y: actor.p.y - j * this.mpS,
                 }, actor.r);
 
-                const tiles: TSE.TileMapUtils.Tile[] =
+                const tiles: TSE.TileMapUtils.ITile[] =
                     this.ptMp[j][i].ly.getTilesAdjacentToCircleActor(circleActor);
-                for (let tile of tiles) {
+                for (const tile of tiles) {
                     tile.value.seen = true;
                 }
                 // End of hacky bullcrap
@@ -198,7 +219,7 @@ export default class Maze extends TSE.RectActor {
             return true;
         }
 
-        const tiles: TSE.TileMapUtils.Tile[] = this.tileMap.getTilesAdjacentToRectActor(actor);
+        const tiles: TSE.TileMapUtils.ITile[] = this.tileMap.getTilesAdjacentToRectActor(actor);
 
         if (tiles.length === 0) {
             return false;
@@ -211,6 +232,81 @@ export default class Maze extends TSE.RectActor {
         }
 
         return false;
+    }
+
+    private  drawWallShadow(pos: IPoint, fromX: number, fromY: number, shadowDepth: number) {
+        //Get points
+        const w: number = this.tileMap.tSz;
+        const points: TSE.Math.IPoint[] = [
+            {x: fromX, y: fromY},
+            {x: fromX + w, y: fromY},
+            {x: fromX + w, y: fromY + w},
+            {x: fromX, y: fromY + w}];
+
+        const actualPoints: TSE.Math.IPoint[] = [];
+        const dotProducts: number[] = [];
+
+        for (let i: number = 0; i < points.length; i++) {
+            const j: number = (i < points.length - 1) ? i + 1 : 0;
+
+            const lightVectX = points[i].x - pos.x;
+            const lightVectY = points[i].y - pos.y;
+
+            const nx = -(points[j].y - points[i].y);
+            const ny = points[j].x - points[i].x;
+
+            const outcome = TSE.Math.dotproduct([lightVectX, lightVectY], [nx, ny]);
+            dotProducts.push(outcome);
+        }
+
+        for(let i: number = 0; i < dotProducts.length; i++) {
+            const j = (i < dotProducts.length - 1) ? i + 1 : 0;
+
+            if (TSE.Math.sign(dotProducts[i]) == 1 && TSE.Math.sign(dotProducts[j]) == 1) {
+                actualPoints.push(points[j]);
+            } else if (TSE.Math.sign(dotProducts[i]) == 1 && TSE.Math.sign(dotProducts[j]) != 1) {
+                actualPoints.push(points[j]);
+
+                const newPointX = points[j].x + (points[j].x - pos.x) * shadowDepth;
+                const newPointY = points[j].y + (points[j].y - pos.y) * shadowDepth;
+                actualPoints.push({x: newPointX, y: newPointY});
+
+            } else if (TSE.Math.sign(dotProducts[i]) != 1 && TSE.Math.sign(dotProducts[j]) == 1) {
+
+                const newPointX = points[j].x + (points[j].x - pos.x) * shadowDepth;
+                const newPointY = points[j].y + (points[j].y - pos.y) * shadowDepth;
+                actualPoints.push({x: newPointX, y: newPointY});
+
+                actualPoints.push(points[j]);
+            }
+        }
+
+        const ctx: CanvasRenderingContext2D = this.st.ctx;
+        if (actualPoints.length != 0) {
+            ctx.beginPath();
+            ctx.moveTo(actualPoints[0].x, actualPoints[0].y);
+            for(let i = 1; i < actualPoints.length; i++) {
+                ctx.lineTo(actualPoints[i].x, actualPoints[i].y);
+
+            }
+            ctx.closePath( );
+            ctx.fillStyle = 'black';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    private translatePointToTile(pos: TSE.Math.IPoint) {
+        if (pos.x < 0 || pos.x > this.w ||
+            pos.y < 0 || pos.y > this.h) {
+            return null;
+        }
+        const currentRow: number = Math.floor(pos.y / this.tileMap.tSz);
+        const currentCol: number = Math.floor(pos.x / this.tileMap.tSz);
+
+        return {row: currentRow, col: currentCol};
     }
 
     private updateTileMapWithMazeParts(): void {

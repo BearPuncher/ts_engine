@@ -37,24 +37,20 @@ export default class Lantern extends TSE.CircleActor {
         const gradient: CanvasGradient = ctx.createRadialGradient(
             this.p.x, this.p.y, this.r * 2,
             this.p.x, this.p.y, this.r);
-        gradient.addColorStop(0,"rgba(0, 0, 0, 1.0)");
-        gradient.addColorStop(1,"rgba(0, 0, 0, 0.0)");
+        gradient.addColorStop(0, 'rgba(0, 0, 0, 1.0)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.0)');
         ctx.fillStyle = gradient;
 
         ctx.fillRect(this.p.x - ctx.canvas.width, this.p.y - ctx.canvas.height,
             ctx.canvas.width * 2, ctx.canvas.height * 2);
 
-        //ctx.globalCompositeOperation = 'lighten';
-        /*ctx.fillStyle = 'rgba(255, 255, 213, 0.3)';
-        ctx.beginPath();
-        ctx.arc(this.p.x, this.p.y, this.r + 6, 0, 2 * Math.PI);
-        ctx.fill();
+       /* ctx.globalCompositeOperation = 'luminosity';
 
         ctx.fillStyle = 'rgba(255, 255, 213, 0.8)';
         ctx.beginPath();
         ctx.arc(this.p.x, this.p.y, this.r, 0, 2 * Math.PI);
-        ctx.fill();
-*/
+        ctx.fill();*/
+
         ctx.restore();
     }
 }

@@ -1,7 +1,7 @@
 import * as TSE from '../../lib';
-import Maze from './maze';
 import Lantern from './lantern';
-import {TileType} from "./maze_part";
+import Maze from './maze';
+import {TileType} from './maze_part';
 
 // Move dr
 enum MoveDir {
@@ -129,11 +129,10 @@ export default class Player extends TSE.RectActor {
 
         const tile: TileType = this.maze.getTileAtPosition({
             x: this.p.x + this.w / 2,
-            y: this.p.y + this.h / 2
+            y: this.p.y + this.h / 2,
         });
 
         if (tile === TileType.E) {
-            console.log('finished');
             this.st.finished = true;
         }
     }
