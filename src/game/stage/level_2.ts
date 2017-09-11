@@ -16,7 +16,7 @@ export default class Level2 extends Level {
         super.addActor(this.m);
 
         const ACTOR_LENGTH: number = 16;
-        this.p1 = new Player({x: 184, y: 312}, ACTOR_LENGTH, ACTOR_LENGTH, {layer: 1});
+        this.p1 = new Player({x: 56, y: 440}, ACTOR_LENGTH, ACTOR_LENGTH, {layer: 1});
         super.addActor(this.p1);
         this.p1.maze = this.m;
 

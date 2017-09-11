@@ -18,9 +18,16 @@ export const MAP_LAYOUTS = [
         [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
     ],
     [
-        [[MazePartType.DE, 2, false], [MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.CR, 0, false], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
+        [[MazePartType.CO, 1, false], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
+        [[MazePartType.DE, 0, false], [MazePartType.TB, 0, true], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
+        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 0, true], [MazePartType.EX, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
+    ],
+    [
+        [[MazePartType.CO, 1, false], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
+        [[MazePartType.DE, 0, false], [MazePartType.TB, 1, false], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
         [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.EX, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
         [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
     ],
 ];
@@ -79,18 +86,30 @@ export abstract class Level extends TSE.Stage {
 
             // TODO: Get standing mazeTile center
 
+            const msCol: number = Math.floor(pos.x / this.m.mpS);
+            const msRow: number = Math.floor(pos.y / this.m.mpS);
+
+            // Check if player min position
             const col: number = Math.floor(this.p1.p.x / this.m.mpS);
             const row: number = Math.floor(this.p1.p.y / this.m.mpS);
 
-            const dX: number = Math.abs(
-                Math.floor(pos.x / this.m.mpS) - col);
-            const dY: number = Math.abs(
-                Math.floor(pos.y / this.m.mpS) - row);
+            const dX: number = Math.abs(msCol - col);
+            const dY: number = Math.abs(msRow - row);
 
             const adjacent: boolean = (dX === 0 && dY === 1) || (dX === 1 && dY === 0);
+
+            // Check if player max position
+            const col2: number = Math.floor((this.p1.p.x + this.p1.w) / this.m.mpS);
+            const row2: number = Math.floor((this.p1.p.y + this.p1.h) / this.m.mpS);
+
+            const dX2: number = Math.abs(msCol - col2);
+            const dY2: number = Math.abs(msRow - row2);
+
+            const adjacent2: boolean = (dX2 === 0 && dY2 === 1) || (dX2 === 1 && dY2 === 0);
+
             //const adjacent: boolean = (dX >= 0 && dY <= 1) || (dX >= 1 && dY <= 0);
 
-            if (selected && standing && adjacent) {
+            if (selected && standing && adjacent && adjacent2) {
                 standing.actionable = true;
 
                 if (selected.rotates) {
@@ -154,6 +173,7 @@ export abstract class Level extends TSE.Stage {
 
         // TODO: draw map
         if (this.p1.mapMode) {
+            this.ctx.canvas.style.cursor = 'no-drop';
             this.drawMap();
             ctx.restore();
         } else {

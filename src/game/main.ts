@@ -2,6 +2,7 @@ import * as TSE from '../lib';
 import {EndScreen} from './stage/end_screen';
 import Level1 from './stage/level_1';
 import Level2 from './stage/level_2';
+import {StartScreen} from "./stage/start_screen";
 import * as TinyMusic from '../../node_modules/tinymusic';
 
 const WIDTH: number = 640;
@@ -18,8 +19,10 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
 
     engine.setStageTransition(() => {
         if (engine.currentStage instanceof TSE.PreloaderStage) {
+            initStartScreen();
+        } else if (engine.currentStage instanceof StartScreen) {
             initLevelOne();
-        } else if (engine.currentStage instanceof Level1) {
+        }else if (engine.currentStage instanceof Level1) {
             initLevelTwo();
         }  else if (engine.currentStage instanceof Level2) {
             initGameOver();
@@ -27,6 +30,10 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
     });
 
     return engine;
+}
+
+function initStartScreen(): void {
+    ENGINE.setStage(new StartScreen(WIDTH, HEIGHT));
 }
 
 function initLevelOne(): void {
