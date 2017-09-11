@@ -3,7 +3,6 @@ import {Level} from './level';
 import Lantern from '../actors/lantern';
 import Maze from '../actors/maze';
 import Player from '../actors/player';
-import Treasure from '../actors/treasure';
 
 const WIDTH: number = 512;
 const HEIGHT: number = 512;
@@ -22,7 +21,7 @@ export default class Level1 extends Level {
         this.p1.maze = this.m;
 
         this.createTreasure({x: 308, y: 48});
-        this.createTreasure({x: 576, y: 432});
+        this.createTreasure({x: 432, y: 432});
 
         const lantern = new Lantern(this.p1, 36);
         super.addActor(lantern);

@@ -3,7 +3,6 @@ import Maze from '../actors/maze';
 import {MazePart, MazePartFactory, MazePartType} from '../actors/maze_part';
 import Player from '../actors/player';
 import Treasure from '../actors/treasure';
-import * as TinyMusic from '../../../node_modules/tinymusic';
 
 interface IMazePartData {
     t: MazePartType;
@@ -42,6 +41,7 @@ export abstract class Level extends TSE.Stage {
     protected cameraClamp: boolean = false;
     protected treasures: Treasure[];
     protected numTreasures: number;
+    protected mapMode: boolean;
 
     public constructor(width: number, height: number) {
         super(width, height);
@@ -147,33 +147,26 @@ export abstract class Level extends TSE.Stage {
      */
     public render(): void {
         const ctx: CanvasRenderingContext2D = this.ctx;
+
         ctx.save();
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, this.w, this.h);
 
-        let cX: number = - this.p1.p.x + this.w / 2;
-        let cY: number = - this.p1.p.y + this.h / 2;
+        // TODO: draw map
+        if (this.p1.mapMode) {
+            this.drawMap();
+            ctx.restore();
+        } else {
+            this.drawGame();
+            ctx.restore();
 
-        if (this.cameraClamp) {
-            // Clamp camera to puzzle area
-            cX = Math.min(0, cX);
-            cY = Math.min(0, cY);
-            cX = Math.max(cX, - this.m.w + this.w);
-            cY = Math.max(cY, - this.m.h + this.h);
+            // Show treasure count
+            ctx.font = '30px Arial';
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'white';
+            ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
+            ctx.strokeText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30)
         }
-
-        ctx.translate(cX, cY);
-        this.camera = {x: cX, y: cY};
-        super.render();
-        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r);
-        this.m.drawMazePostEffects();
-        ctx.restore();
-
-        // Show treasure count
-        ctx.font = '30px Arial';
-        ctx.strokeStyle = 'black';
-        ctx.fillStyle = 'white';
-        ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
     }
 
     protected createTreasure(point: TSE.Math.IPoint) {
@@ -195,6 +188,48 @@ export abstract class Level extends TSE.Stage {
             row++;
         }
         this.m.setMazeParts(mazeParts);
+    }
+
+    private drawGame(): void {
+        const ctx: CanvasRenderingContext2D = this.ctx;
+
+        let cX: number = - this.p1.p.x + this.w / 2;
+        let cY: number = - this.p1.p.y + this.h / 2;
+
+        if (this.cameraClamp) {
+            // Clamp camera to puzzle area
+            cX = Math.min(0, cX);
+            cY = Math.min(0, cY);
+            cX = Math.max(cX, - this.m.w + this.w);
+            cY = Math.max(cY, - this.m.h + this.h);
+        }
+
+        ctx.translate(cX, cY);
+        this.camera = {x: cX, y: cY};
+        super.render();
+        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r);
+        this.m.drawMazePostEffects();
+    }
+
+    private drawMap(): void {
+        const ctx: CanvasRenderingContext2D = this.ctx;
+
+        const map: string = 'Map';
+        const headerHeight: number = 30;
+
+        ctx.font = headerHeight + 'px Arial';
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = 'white';
+        const halfTextWidth: number = this.ctx.measureText(map).width / 2;
+        this.ctx.fillText(map, this.w / 2 - halfTextWidth, headerHeight);
+
+        const maxScale: number = Math.min(this.w / this.m.w, (this.h - headerHeight) / this.m.h);
+        const offset: number = (this.w - (this.m.w * maxScale)) / 2;
+
+        ctx.translate(offset, headerHeight);
+        ctx.scale(maxScale, maxScale);
+
+        this.m.drawAsMap();
     }
 
     private getMousePosition(): TSE.Math.IPoint {

@@ -97,8 +97,6 @@ export default class Maze extends TSE.RectActor {
         const stopX: number  = (tileLocation.col + dist > this.tileMap.cl) ? this.tileMap.cl : tileLocation.col + dist;
         const stopY: number  = (tileLocation.row + dist > this.tileMap.rw) ? this.tileMap.rw : tileLocation.row + dist;
 
-        const ctx: CanvasRenderingContext2D = this.st.ctx;
-
         for(let i = startX; i < stopX; i++) {
             for (let j = startY; j < stopY; j++) {
                 const tile = this.tileMap.getTile(j, i);
@@ -108,6 +106,26 @@ export default class Maze extends TSE.RectActor {
                     const y: number = tileSize * j;
 
                     this.drawWallShadow(lightSource, x, y, shadowDepth);
+                }
+            }
+        }
+    }
+
+    public drawAsMap() {
+        const ctx: CanvasRenderingContext2D = this.st.ctx;
+        for (let r = 0; r < this.tileMap.rw; r++) {
+            for (let c = 0; c < this.tileMap.cl; c++) {
+                const tile = this.tileMap.getTile(r, c);
+                if (tile !== TileType.W) {
+                    ctx.fillStyle = 'grey';
+                    ctx.strokeStyle = 'grey';
+
+                    const tileSize: number = this.tileMap.tSz;
+                    const x: number = tileSize * c;
+                    const y: number = tileSize * r;
+                    ctx.lineWidth = 1;
+                    ctx.fillRect(x, y, tileSize, tileSize);
+                    ctx.strokeRect(x, y, tileSize, tileSize);
                 }
             }
         }

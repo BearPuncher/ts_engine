@@ -22,6 +22,8 @@ export default class Player extends TSE.RectActor {
 
     public lantern: Lantern;
     public maze: Maze;
+    public mapMode: boolean;
+
     /**
      * Mouse status.
      */
@@ -32,14 +34,16 @@ export default class Player extends TSE.RectActor {
     private oldP: TSE.Math.IPoint;
 
     public init(): void {
-        this.ms = {l: false, r: false, p: null};
         this.debugColour = 'orange';
+        this.mapMode = false;
         const canvas: HTMLCanvasElement = this.st.ctx.canvas;
         // Update ms p
         canvas.addEventListener('mousemove', (event: MouseEvent) => {
             const rect = this.st.ctx.canvas.getBoundingClientRect();
             this.ms.p = {x: event.clientX - rect.left, y: event.clientY - rect.top};
         }, true);
+
+        this.ms = {l: false, r: false, p: null};
         // Capture click
         canvas.addEventListener('mousedown', (event: MouseEvent) => {
             event.preventDefault();
@@ -74,6 +78,13 @@ export default class Player extends TSE.RectActor {
 
     private doMove(step: number): void {
         const controls: TSE.Controller = new TSE.Controller();
+
+        // Toggle map mode
+        if (controls.isPressed(TSE.Controller.keys.SPACE)) {
+            this.mapMode = true;
+        } else {
+            this.mapMode = false;
+        }
 
         const fraction: number = (step / 100);
         const speed: number = fraction * 24;

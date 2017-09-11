@@ -1,7 +1,7 @@
 import * as TSE from '../../lib';
 
 /**
- * Wall, PATH, RAMP, O, EX.
+ * Wall, PATH, RAMP, OVERPASS, EXIT.
  */
 export enum TileType {
     W = 0,
@@ -132,21 +132,6 @@ export class MazePart {
         ctx.save();
         ctx.translate(xOffset, yOffset);
         this.s.draw({x: 0, y: 0}, ctx);
-        /**
-        for (let row = 0; row < this.di; row++) {
-            for (let col = 0; col < this.di; col++) {
-                const tile: IMazeTile = this.ly.getTile(row, col);
-                if (!tile.seen) {
-                    const tileSize: number = this.ly.tSz;
-                    const x: number = tileSize * col;
-                    const y: number = tileSize * row;
-                    ctx.strokeStyle = 'black';
-                    ctx.lineWidth = 3;
-                    ctx.fillStyle = 'black';
-                    ctx.fillRect(x - 1, y - 1, this.ly.tSz + 2, this.ly.tSz + 2);
-                }
-            }
-        }**/
 
         ctx.restore();
     }

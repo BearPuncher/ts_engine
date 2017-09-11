@@ -45,6 +45,9 @@ export default class Controller {
             S: 83,
             UP: 38,
             W: 87,
+            SPACE: 32,
+            M: 77,
+            ESC: 27,
         };
         Controller.instance = this;
     }
