@@ -3,7 +3,8 @@ import * as TinyMusic from '../../../node_modules/tinymusic';
 
 export class StartScreen extends TSE.Stage {
 
-    private gameName: string = 'TWISTED TUNNELS';
+    private gameName: string = 'TWISTED\nTUNNELS';
+    private pressStart: string = 'Press SPACE to Start Game';
     private leadSequence: any;
 
     public init():void {
@@ -68,7 +69,7 @@ export class StartScreen extends TSE.Stage {
         const controls: TSE.Controller = new TSE.Controller();
 
         // Toggle map mode
-        if (controls.isPressed(TSE.Controller.keys.ENTER)) {
+        if (controls.isPressed(TSE.Controller.keys.SPACE) || controls.isPressed(TSE.Controller.keys.ENTER)) {
             this.finished = true;
             this.leadSequence.stop();
         }
@@ -79,12 +80,19 @@ export class StartScreen extends TSE.Stage {
         this.ctx.save();
         this.ctx.fillStyle = 'black';
         this.ctx.fillRect(0, 0, this.w, this.h);
-        this.ctx.font = '64px Arial';
+        this.ctx.font = '60px Blippo, fantasy';
         this.ctx.fillStyle = 'white';
-        const halfTextWidth: number = this.ctx.measureText(this.gameName).width / 2;
+        const halfTextWidthGameName: number = this.ctx.measureText(this.gameName).width / 2;
         this.ctx.fillText(
-            this.gameName, this.w / 2 - halfTextWidth,
+            this.gameName, this.w / 2 - halfTextWidthGameName,
             this.h / 2);
+
+        this.ctx.font = '30px Blippo, fantasy';
+        const halfTextWidthPressStart: number = this.ctx.measureText(this.pressStart).width / 2;
+        this.ctx.fillText(
+            this.pressStart, this.w / 2 - halfTextWidthPressStart,
+            this.h / 2 + 90);
+
         this.ctx.restore();
     }
 }

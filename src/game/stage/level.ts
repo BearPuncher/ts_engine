@@ -3,6 +3,7 @@ import Maze from '../actors/maze';
 import {MazePart, MazePartFactory, MazePartType} from '../actors/maze_part';
 import Player from '../actors/player';
 import Treasure from '../actors/treasure';
+import * as TinyMusic from '../../../node_modules/tinymusic';
 
 interface IMazePartData {
     t: MazePartType;
@@ -24,16 +25,17 @@ export const MAP_LAYOUTS = [
         [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
     ],
     [
-        [[MazePartType.CO, 1, false], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
-        [[MazePartType.DE, 0, false], [MazePartType.TB, 1, false], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
-        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.EX, 2, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.TB, 0, false], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
+        [[MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.EX, 3, false], [MazePartType.CO, 1, false], [MazePartType.CO, 2, false]],
+        [[MazePartType.ST, 0, false], [MazePartType.TB, 2, true], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false], [MazePartType.ST, 1, true]],
+        [[MazePartType.CO, 0, false], [MazePartType.CO, 3, false], [MazePartType.TB, 0, true], [MazePartType.ST, 1, false], [MazePartType.CO, 3, false]],
+        [[MazePartType.DE, 2, false], [MazePartType.DE, 1, false], [MazePartType.TB, 3, false], [MazePartType.CO, 1, false], [MazePartType.CO, 2, false]],
+        [[MazePartType.CO, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 1, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
     ],
 ];
 
 // TODO: drawMazeParts shadows around circle
 // TODO: change tilemap to keep tyle info
+// TODO: move maze data to actual levels
 export abstract class Level extends TSE.Stage {
 
     /**
@@ -155,6 +157,7 @@ export abstract class Level extends TSE.Stage {
             if (!t.remove && t.isColliding(this.p1)) {
                 t.remove = true;
                 this.numTreasures++;
+                this.playTreasureSound();
             }
         }
 
@@ -181,11 +184,10 @@ export abstract class Level extends TSE.Stage {
             ctx.restore();
 
             // Show treasure count
-            ctx.font = '30px Arial';
+            ctx.font = '30px Blippo, fantasy';
             ctx.strokeStyle = 'black';
             ctx.fillStyle = 'white';
             ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
-            ctx.strokeText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30)
         }
     }
 
@@ -237,7 +239,7 @@ export abstract class Level extends TSE.Stage {
         const map: string = 'Map';
         const headerHeight: number = 30;
 
-        ctx.font = headerHeight + 'px Arial';
+        ctx.font = headerHeight + 'px Chalkduster, fantasy';
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'white';
         const halfTextWidth: number = this.ctx.measureText(map).width / 2;
@@ -250,6 +252,13 @@ export abstract class Level extends TSE.Stage {
         ctx.scale(maxScale, maxScale);
 
         this.m.drawAsMap();
+        this.p1.render();
+
+        for (let t of this.treasures) {
+            if (!t.remove) {
+                t.render();
+            }
+        }
     }
 
     private getMousePosition(): TSE.Math.IPoint {
@@ -258,5 +267,26 @@ export abstract class Level extends TSE.Stage {
         }
         return {x: this.p1.ms.p.x - this.camera.x,
             y: this.p1.ms.p.y - this.camera.y};
+    }
+
+    private playTreasureSound() {
+        let ac: AudioContext = new AudioContext;
+        let tempo: number = 132;
+        let lead = [
+            'Bb4 s',
+            'Ab4 s',
+            'Bb4 s',
+            'C5  eq'
+
+        ];
+
+        const sequence: any = new TinyMusic.Sequence(ac, tempo, lead);
+        sequence.staccato = 0.2;
+        sequence.gain.gain.value = 1.0 / 2;
+        sequence.mid.frequency.value = 800;
+        sequence.mid.gain.value = 3;
+        sequence.loop = false;
+        let when: number = ac.currentTime;
+        sequence.play(when);
     }
 }

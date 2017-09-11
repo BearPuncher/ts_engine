@@ -46,6 +46,7 @@ export default class Controller {
             UP: 38,
             W: 87,
             SPACE: 32,
+            SHIFT: 16,
             M: 77,
             ESC: 27,
         };

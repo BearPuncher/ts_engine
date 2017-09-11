@@ -1,7 +1,7 @@
 import * as TSE from '../../lib';
 import Lantern from './lantern';
 import Maze from './maze';
-import {TileType} from './maze_part';
+import {IMazeTile, TileType} from './maze_part';
 
 // Move dr
 enum MoveDir {
@@ -80,8 +80,9 @@ export default class Player extends TSE.RectActor {
         const controls: TSE.Controller = new TSE.Controller();
 
         // Toggle map mode
-        if (controls.isPressed(TSE.Controller.keys.SPACE)) {
+        if (controls.isPressed(TSE.Controller.keys.SHIFT)) {
             this.mapMode = true;
+            return;
         } else {
             this.mapMode = false;
         }
@@ -138,12 +139,12 @@ export default class Player extends TSE.RectActor {
             this.p = this.oldP;
         }
 
-        const tile: TileType = this.maze.getTileAtPosition({
+        const tile: IMazeTile = this.maze.getTileAtPosition({
             x: this.p.x + this.w / 2,
             y: this.p.y + this.h / 2,
         });
 
-        if (tile === TileType.E) {
+        if (tile.type === TileType.E) {
             this.st.finished = true;
         }
     }

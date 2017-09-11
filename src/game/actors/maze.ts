@@ -99,8 +99,8 @@ export default class Maze extends TSE.RectActor {
 
         for(let i = startX; i < stopX; i++) {
             for (let j = startY; j < stopY; j++) {
-                const tile = this.tileMap.getTile(j, i);
-                if (tile === TileType.W) {
+                const tile: IMazeTile = this.tileMap.getTile(j, i);
+                if (tile.type === TileType.W) {
                     const tileSize: number = this.tileMap.tSz;
                     const x: number = tileSize * i;
                     const y: number = tileSize * j;
@@ -115,8 +115,8 @@ export default class Maze extends TSE.RectActor {
         const ctx: CanvasRenderingContext2D = this.st.ctx;
         for (let r = 0; r < this.tileMap.rw; r++) {
             for (let c = 0; c < this.tileMap.cl; c++) {
-                const tile = this.tileMap.getTile(r, c);
-                if (tile !== TileType.W) {
+                const tile: IMazeTile = this.tileMap.getTile(r, c);
+                if (tile.type !== TileType.W && tile.seen) {
                     ctx.fillStyle = 'grey';
                     ctx.strokeStyle = 'grey';
 
@@ -180,7 +180,7 @@ export default class Maze extends TSE.RectActor {
         return this.ptMp[currentRow][currentCol];
     }
 
-    public getTileAtPosition(pos: TSE.Math.IPoint): any {
+    public getTileAtPosition(pos: TSE.Math.IPoint): IMazeTile {
         const loc = this.translatePointToTile(pos);
         return this.tileMap.getTile(loc.row, loc.col);
     }
@@ -244,7 +244,7 @@ export default class Maze extends TSE.RectActor {
         }
 
         for (const tile of tiles) {
-            if (tile.value === TileType.W) {
+            if (tile.value.type === TileType.W) {
                 return true;
             }
         }
@@ -333,7 +333,7 @@ export default class Maze extends TSE.RectActor {
                 for (let innerCol = 0; innerCol < part.di; innerCol++) {
                     const tile: IMazeTile = part.ly.getTile(innerRow, innerCol);
                     this.tileMap.setTile(row * part.di + innerRow,
-                        col * part.di + innerCol, tile.type);
+                        col * part.di + innerCol, tile);
                 }
             }
         });
