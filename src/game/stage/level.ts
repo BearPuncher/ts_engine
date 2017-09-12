@@ -11,7 +11,13 @@ interface IMazePartData {
     cr: boolean;
 }
 
-export const MAP_LAYOUTS = [
+export interface IScore {
+    foundTreasure: number,
+    treasure: number,
+    time: string,
+}
+
+const MAP_LAYOUTS = [
     [
         [[MazePartType.CO, 1, false], [MazePartType.DE, 3, false], [MazePartType.DE, 2, false], [MazePartType.EX, 2, false]],
         [[MazePartType.TB, 0, true], [MazePartType.ST, 1, false], [MazePartType.CO, 3, false], [MazePartType.ST, 1, true]],
@@ -57,7 +63,6 @@ export abstract class Level extends TSE.Stage {
     protected cameraClamp: boolean = false;
 
     protected mapMode: boolean;
-    protected completed: boolean;
 
     public constructor(width: number, height: number, ac: AudioContext) {
         super(width, height);
@@ -230,6 +235,10 @@ export abstract class Level extends TSE.Stage {
     public playWinSound() {
         let when: number = this.ac.currentTime;
         this.winSequence.play(when);
+    }
+
+    public getScore(): IScore {
+        return {treasure: this.treasures.length, foundTreasure: this.numTreasures, time: this.getTimeString()};
     }
 
     protected createTreasure(point: TSE.Math.IPoint) {
