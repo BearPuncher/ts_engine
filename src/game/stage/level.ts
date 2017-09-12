@@ -94,7 +94,7 @@ export abstract class Level extends TSE.Stage {
             }
         }
 
-        if (pos) {
+        if (pos && !this.p1.mapMode) {
             // TODO: This is hacky
             const selected: MazePart = this.m.getMazePartAtPosition(pos);
             const standing: MazePart = this.m.getMazePartAtPosition({x: this.p1.p.x + this.p1.w / 2,
@@ -270,7 +270,7 @@ export abstract class Level extends TSE.Stage {
         ctx.translate(cX, cY);
         this.camera = {x: cX, y: cY};
         super.render();
-        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r);
+        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r + 32);
         this.m.drawMazePostEffects();
     }
 
@@ -278,13 +278,30 @@ export abstract class Level extends TSE.Stage {
         const ctx: CanvasRenderingContext2D = this.ctx;
 
         const map: string = 'Map';
-        const headerHeight: number = 30;
+        const headerHeight: number = 60;
 
-        ctx.font = headerHeight + 'px Chalkduster, fantasy';
+        ctx.font = '30px Chalkduster, fantasy';
         ctx.strokeStyle = 'black';
         ctx.fillStyle = 'white';
-        const halfTextWidth: number = this.ctx.measureText(map).width / 2;
-        this.ctx.fillText(map, this.w / 2 - halfTextWidth, headerHeight);
+        const mapHalfTextWidth: number = this.ctx.measureText(map).width / 2;
+        this.ctx.fillText(map, this.w / 2 - mapHalfTextWidth, 30);
+
+        ctx.font = '20px Chalkduster, fantasy';
+
+        ctx.fillStyle = 'yellow';
+        const treasureString: string = 'Treasure';
+        const treasureHalfTextWidth: number = this.ctx.measureText(treasureString).width / 2;
+        this.ctx.fillText(treasureString, this.w / 2 - treasureHalfTextWidth, headerHeight);
+
+        ctx.fillStyle = 'green';
+        const exitString: string = 'Exit';
+        const exitTextWidth: number = this.ctx.measureText(exitString).width;
+        this.ctx.fillText(exitString, this.w / 2 + treasureHalfTextWidth + exitTextWidth, headerHeight);
+
+        const playerString: string = 'Player';
+        ctx.fillStyle = 'orange';
+        const playerTextWidth: number = this.ctx.measureText(playerString).width;
+        this.ctx.fillText(playerString, this.w / 2 - treasureHalfTextWidth - playerTextWidth - exitTextWidth, headerHeight);
 
         const maxScale: number = Math.min(this.w / this.m.w, (this.h - headerHeight) / this.m.h);
         const offset: number = (this.w - (this.m.w * maxScale)) / 2;
@@ -350,6 +367,7 @@ export abstract class Level extends TSE.Stage {
         const lead = [
             'Ab4 s',
             'A4  s',
+            '- s',
             'Ab4 s',
             'A4  s',
             'C5  q'

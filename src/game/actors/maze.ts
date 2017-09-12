@@ -118,8 +118,13 @@ export default class Maze extends TSE.RectActor {
             for (let c = 0; c < this.tileMap.cl; c++) {
                 const tile: IMazeTile = this.tileMap.getTile(r, c);
                 if (tile.type !== TileType.W && tile.seen) {
-                    ctx.fillStyle = 'grey';
-                    ctx.strokeStyle = 'grey';
+                    if (tile.type === TileType.E) {
+                        ctx.fillStyle = 'green';
+                        ctx.strokeStyle = 'green';
+                    } else {
+                        ctx.fillStyle = 'grey';
+                        ctx.strokeStyle = 'grey';
+                    }
 
                     const tileSize: number = this.tileMap.tSz;
                     const x: number = tileSize * c;

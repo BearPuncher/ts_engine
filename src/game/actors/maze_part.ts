@@ -34,7 +34,7 @@ const TileLayouts = {
         TileType.P, TileType.O, TileType.O, TileType.R,
         TileType.W, TileType.R, TileType.R, TileType.W],
     EXIT: [TileType.W, TileType.P, TileType.P, TileType.W,
-        TileType.W, TileType.P, TileType.P, TileType.W,
+        TileType.W, TileType.E, TileType.E, TileType.W,
         TileType.W, TileType.E, TileType.E, TileType.W,
         TileType.W, TileType.W, TileType.W, TileType.W],
     OVERPASS: [TileType.W, TileType.P, TileType.P, TileType.W,
