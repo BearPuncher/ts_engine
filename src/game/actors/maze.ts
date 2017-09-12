@@ -74,6 +74,7 @@ export default class Maze extends TSE.RectActor {
         this.iterateMazeParts((part: MazePart, row: number, col: number) => {
             part.actionable = false;
             part.hovered = false;
+            part.standing = false;
         });
     }
 

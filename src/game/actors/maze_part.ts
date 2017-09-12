@@ -72,6 +72,7 @@ export class MazePart {
     public actionable: boolean;
     public hovered: boolean;
     public rotates: boolean;
+    public standing: boolean;
     /**
      * Sprite.
      */
@@ -86,6 +87,7 @@ export class MazePart {
         this.actionable = false;
         this.hovered = false;
         this.rotates = true;
+        this.standing = false;
 
         // Set s
         const LOADER: TSE.AssetLoader = new TSE.AssetLoader();
@@ -141,12 +143,18 @@ export class MazePart {
         ctx.translate(xOffset, yOffset);
         ctx.lineWidth = 3;
 
-        if (this.rotates && this.actionable) {
-            ctx.strokeStyle = 'red';
-            if (this.hovered) {
-                ctx.strokeStyle = 'blue';
+        if (this.rotates) {
+            if (this.actionable) {
+                ctx.strokeStyle = 'green';
+                if (this.hovered) {
+                    ctx.strokeStyle = 'blue';
+                }
+                ctx.strokeRect(0, 0, this.lg, this.lg);
             }
-            ctx.strokeRect(0, 0, this.lg, this.lg);
+            if (this.standing) {
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(0, 0, this.lg, this.lg);
+            }
         }
         ctx.restore();
     }

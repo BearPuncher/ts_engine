@@ -2,6 +2,7 @@ import * as TSE from '../../lib';
 import Lantern from './lantern';
 import Maze from './maze';
 import {IMazeTile, TileType} from './maze_part';
+import {Level} from "../stage/level";
 
 // Move dr
 enum MoveDir {
@@ -145,7 +146,12 @@ export default class Player extends TSE.RectActor {
         });
 
         if (tile.type === TileType.E) {
-            this.st.finished = true;
+            (this.st as Level).playWinSound();
+
+            const stage = this.st;
+            setTimeout(() => {
+                stage.finished = true;
+            }, 500);
         }
     }
 

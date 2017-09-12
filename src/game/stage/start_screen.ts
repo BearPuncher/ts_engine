@@ -6,10 +6,10 @@ export class StartScreen extends TSE.Stage {
     private gameName: string = 'TWISTED\nTUNNELS';
     private pressStart: string = 'Press SPACE to Start Game';
     private leadSequence: any;
+    public ac: AudioContext;
 
     public init():void {
         super.init();
-        let ac: AudioContext = new AudioContext;
         // get the current Web Audio timestamp (this is when playback should begin)
         let tempo: number = 132;
         let lead = [
@@ -55,12 +55,12 @@ export class StartScreen extends TSE.Stage {
                 'D3  q',
                 'F3  q',
             ];
-        this.leadSequence = new TinyMusic.Sequence(ac, tempo, lead);
-        this.leadSequence.staccato = 0.55;
-        this.leadSequence.gain.gain.value = 1.0 / 2;
+        this.leadSequence = new TinyMusic.Sequence(this.ac, tempo, lead);
+        this.leadSequence.staccato = 0.3;
+        this.leadSequence.gain.gain.value = 0.1;
         this.leadSequence.mid.frequency.value = 800;
         this.leadSequence.mid.gain.value = 3;
-        let when: number = ac.currentTime;
+        let when: number = this.ac.currentTime;
         this.leadSequence.play(when);
     }
 

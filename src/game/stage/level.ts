@@ -33,14 +33,17 @@ export const MAP_LAYOUTS = [
     ],
 ];
 
-// TODO: drawMazeParts shadows around circle
-// TODO: change tilemap to keep tyle info
 // TODO: move maze data to actual levels
 export abstract class Level extends TSE.Stage {
 
     public playTime: number;
     public numTreasures: number;
     public treasures: Treasure[];
+
+    private ac: AudioContext;
+    private turnSequence: any;
+    private treasureSequence: any;
+    private winSequence: any;
 
     /**
      * Maze.
@@ -54,12 +57,18 @@ export abstract class Level extends TSE.Stage {
     protected cameraClamp: boolean = false;
 
     protected mapMode: boolean;
+    protected completed: boolean;
 
-    public constructor(width: number, height: number) {
+    public constructor(width: number, height: number, ac: AudioContext) {
         super(width, height);
         this.playTime = 0;
         this.numTreasures = 0;
         this.treasures = [];
+        this.ac = ac;
+
+        this.initPlayWinSound();
+        this.initPlayTreasureSound();
+        this.initPlayMazePartRotate();
     }
 
     /**
@@ -88,7 +97,8 @@ export abstract class Level extends TSE.Stage {
         if (pos) {
             // TODO: This is hacky
             const selected: MazePart = this.m.getMazePartAtPosition(pos);
-            const standing: MazePart = this.m.getMazePartAtPosition(this.p1.p);
+            const standing: MazePart = this.m.getMazePartAtPosition({x: this.p1.p.x + this.p1.w / 2,
+                y: this.p1.p.y + this.p1.h / 2});
 
             // TODO: Get standing mazeTile center
 
@@ -112,7 +122,6 @@ export abstract class Level extends TSE.Stage {
             const dY2: number = Math.abs(msRow - row2);
 
             const adjacent2: boolean = (dX2 === 0 && dY2 === 1) || (dX2 === 1 && dY2 === 0);
-
             //const adjacent: boolean = (dX >= 0 && dY <= 1) || (dX >= 1 && dY <= 0);
 
             if (selected && standing && adjacent && adjacent2) {
@@ -130,6 +139,8 @@ export abstract class Level extends TSE.Stage {
                         if (this.p1.ms.l) {
                             this.m.needsUpdate = true;
                             selected.rotateLeft();
+                            let when: number = this.ac.currentTime;
+                            this.turnSequence.play(when);
                             // Rotate if standing on
                             /*if (selected === standing) {
                                 this.p1.p = TSE.Math.rotatePoint(tileCenter, 90, this.p1.p);
@@ -138,6 +149,8 @@ export abstract class Level extends TSE.Stage {
                         if (this.p1.ms.r) {
                             this.m.needsUpdate = true;
                             selected.rotateRight();
+                            let when: number = this.ac.currentTime;
+                            this.turnSequence.play(when);
                             // Rotate if standing on
                             /*if (selected === standing) {
                                 this.p1.p = TSE.Math.rotatePoint(tileCenter, -90, this.p1.p);
@@ -146,12 +159,13 @@ export abstract class Level extends TSE.Stage {
                     }
                 }
                 selected.hovered = true;
-            } else if (selected === standing) {
-                if (selected.rotates) {
+            }
+            if (standing.rotates) {
+                if (standing === selected) {
                     cursor = 'not-allowed';
                 }
-                selected.actionable = true;
             }
+            standing.standing = true;
         }
         this.ctx.canvas.style.cursor = cursor;
 
@@ -161,22 +175,17 @@ export abstract class Level extends TSE.Stage {
             if (!t.remove && t.isColliding(this.p1)) {
                 t.remove = true;
                 this.numTreasures++;
-                this.playTreasureSound();
+                let when: number = this.ac.currentTime;
+                this.treasureSequence.play(when);
             }
         }
 
         this.playTime += step;
         super.update(step);
-    }
 
-    public getTimeString(): string {
-        const time: number  = 1000 * Math.round(this.playTime / 1000); // round to nearest second
-        const d = new Date(time);
-
-        return d.getUTCMinutes()
-                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
-            + ':' + d.getUTCSeconds()
-                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+        if (this.finished) {
+            this.playWinSound();
+        }
     }
 
     /**
@@ -189,7 +198,6 @@ export abstract class Level extends TSE.Stage {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, this.w, this.h);
 
-        // TODO: draw map
         if (this.p1.mapMode) {
             this.ctx.canvas.style.cursor = 'no-drop';
             this.drawMap();
@@ -207,6 +215,21 @@ export abstract class Level extends TSE.Stage {
             ctx.fillStyle = 'white';
             ctx.fillText(timeString, this.w - ctx.measureText(timeString).width - 30, this.h - 30);
         }
+    }
+
+    public getTimeString(): string {
+        const time: number  = 1000 * Math.round(this.playTime / 1000); // round to nearest second
+        const d = new Date(time);
+
+        return d.getUTCMinutes()
+                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
+            + ':' + d.getUTCSeconds()
+                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+    }
+
+    public playWinSound() {
+        let when: number = this.ac.currentTime;
+        this.winSequence.play(when);
     }
 
     protected createTreasure(point: TSE.Math.IPoint) {
@@ -287,10 +310,25 @@ export abstract class Level extends TSE.Stage {
             y: this.p1.ms.p.y - this.camera.y};
     }
 
-    private playTreasureSound() {
-        let ac: AudioContext = new AudioContext;
-        let tempo: number = 132;
-        let lead = [
+    private initPlayMazePartRotate() {
+        const tempo: number = 264;
+        const lead = [
+            'A2  s',
+            'Bb2 s'
+        ];
+
+        const sequence: any = new TinyMusic.Sequence(this.ac, tempo, lead);
+        sequence.staccato = 0.2;
+        sequence.gain.gain.value = 0.25;
+        sequence.mid.frequency.value = 800;
+        sequence.mid.gain.value = 3;
+        sequence.loop = false;
+        this.turnSequence = sequence;
+    }
+
+    private initPlayTreasureSound() {
+        const tempo: number = 132;
+        const lead = [
             'Bb4 s',
             'Ab4 s',
             'Bb4 s',
@@ -298,13 +336,31 @@ export abstract class Level extends TSE.Stage {
 
         ];
 
-        const sequence: any = new TinyMusic.Sequence(ac, tempo, lead);
+        const sequence: any = new TinyMusic.Sequence(this.ac, tempo, lead);
         sequence.staccato = 0.2;
-        sequence.gain.gain.value = 1.0 / 2;
+        sequence.gain.gain.value = 0.25;
         sequence.mid.frequency.value = 800;
         sequence.mid.gain.value = 3;
         sequence.loop = false;
-        let when: number = ac.currentTime;
-        sequence.play(when);
+        this.treasureSequence = sequence;
+    }
+
+    private initPlayWinSound(): void {
+        const tempo: number = 132;
+        const lead = [
+            'Ab4 s',
+            'A4  s',
+            'Ab4 s',
+            'A4  s',
+            'C5  q'
+        ];
+
+        const sequence: any = new TinyMusic.Sequence(this.ac, tempo, lead);
+        sequence.staccato = 0.2;
+        sequence.gain.gain.value = 0.25;
+        sequence.mid.frequency.value = 800;
+        sequence.mid.gain.value = 3;
+        sequence.loop = false;
+        this.winSequence = sequence;
     }
 }

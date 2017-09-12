@@ -34,7 +34,7 @@ export default class Lantern extends TSE.CircleActor {
         // draw a simple rectangle shape
         ctx.save();
 
-        const extra: number = 12;
+        const extra: number = 24;
         const gradient: CanvasGradient = ctx.createRadialGradient(
             this.p.x, this.p.y, (this.r + extra) * 2,
             this.p.x, this.p.y, this.r + extra);

@@ -10,6 +10,7 @@ const WIDTH: number = 640;
 const HEIGHT: number = 480;
 const CANVAS: string = 'game';
 const LOADER: TSE.AssetLoader = new TSE.AssetLoader();
+const ac: AudioContext = new AudioContext;
 
 function setupEngine(width: number, height: number, canvasId: string): TSE.Engine {
     const engine = new TSE.Engine(width, height, document.getElementById(canvasId));
@@ -36,19 +37,23 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
 }
 
 function initStartScreen(): void {
-    ENGINE.setStage(new StartScreen(WIDTH, HEIGHT));
+    const stage = new StartScreen(WIDTH, HEIGHT);
+    stage.ac = ac;
+    ENGINE.setStage(stage);
 }
 
 function initLevelOne(): void {
-    ENGINE.setStage(new Level1(WIDTH, HEIGHT));
+    const level1 = new Level1(WIDTH, HEIGHT, ac);
+    level1.playWinSound();
+    ENGINE.setStage(level1);
 }
 
 function initLevelTwo(): void {
-    ENGINE.setStage(new Level2(WIDTH, HEIGHT));
+    ENGINE.setStage(new Level2(WIDTH, HEIGHT, ac));
 }
 
 function initLevelThree(): void {
-    ENGINE.setStage(new Level3(WIDTH, HEIGHT));
+    ENGINE.setStage(new Level3(WIDTH, HEIGHT, ac));
 }
 
 function initGameOver(): void {
