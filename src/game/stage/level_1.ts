@@ -25,5 +25,7 @@ export default class Level1 extends Level {
 
         const lantern = new Lantern(this.p1, 36);
         super.addActor(lantern);
+
+        this.playTime = 0;
     }
 }

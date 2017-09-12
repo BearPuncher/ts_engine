@@ -38,6 +38,10 @@ export const MAP_LAYOUTS = [
 // TODO: move maze data to actual levels
 export abstract class Level extends TSE.Stage {
 
+    public playTime: number;
+    public numTreasures: number;
+    public treasures: Treasure[];
+
     /**
      * Maze.
      */
@@ -48,14 +52,14 @@ export abstract class Level extends TSE.Stage {
     protected p1: Player;
     protected camera: TSE.Math.IPoint = {x: 0, y: 0};
     protected cameraClamp: boolean = false;
-    protected treasures: Treasure[];
-    protected numTreasures: number;
+
     protected mapMode: boolean;
 
     public constructor(width: number, height: number) {
         super(width, height);
-        this.treasures = [];
+        this.playTime = 0;
         this.numTreasures = 0;
+        this.treasures = [];
     }
 
     /**
@@ -161,7 +165,18 @@ export abstract class Level extends TSE.Stage {
             }
         }
 
+        this.playTime += step;
         super.update(step);
+    }
+
+    public getTimeString(): string {
+        const time: number  = 1000 * Math.round(this.playTime / 1000); // round to nearest second
+        const d = new Date(time);
+
+        return d.getUTCMinutes()
+                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false})
+            + ':' + d.getUTCSeconds()
+                .toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
     }
 
     /**
@@ -185,9 +200,12 @@ export abstract class Level extends TSE.Stage {
 
             // Show treasure count
             ctx.font = '30px Blippo, fantasy';
-            ctx.strokeStyle = 'black';
             ctx.fillStyle = 'white';
             ctx.fillText("Treasure Found " + this.numTreasures + "/" + this.treasures.length, 30, this.h - 30);
+
+            const timeString: string = this.getTimeString();
+            ctx.fillStyle = 'white';
+            ctx.fillText(timeString, this.w - ctx.measureText(timeString).width - 30, this.h - 30);
         }
     }
 
