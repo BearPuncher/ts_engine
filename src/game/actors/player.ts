@@ -24,6 +24,8 @@ export default class Player extends TSE.RectActor {
     public lantern: Lantern;
     public maze: Maze;
     public mapMode: boolean;
+    private complete: boolean;
+
 
     /**
      * Mouse status.
@@ -35,6 +37,7 @@ export default class Player extends TSE.RectActor {
     private oldP: TSE.Math.IPoint;
 
     public init(): void {
+        this.complete = false;
         this.debugColour = 'orange';
         this.mapMode = false;
         const canvas: HTMLCanvasElement = this.st.ctx.canvas;
@@ -145,7 +148,8 @@ export default class Player extends TSE.RectActor {
             y: this.p.y + this.h / 2,
         });
 
-        if (tile.type === TileType.E) {
+        if (tile.type === TileType.E && !this.complete) {
+            this.complete = true;
             (this.st as Level).playWinSound();
 
             const stage = this.st;

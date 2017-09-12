@@ -5,12 +5,6 @@ import Player from '../actors/player';
 import Treasure from '../actors/treasure';
 import * as TinyMusic from '../../../node_modules/tinymusic';
 
-interface IMazePartData {
-    t: MazePartType;
-    r: number;
-    cr: boolean;
-}
-
 export interface IScore {
     foundTreasure: number,
     treasure: number,
@@ -194,10 +188,6 @@ export abstract class Level extends TSE.Stage {
 
         this.playTime += step;
         super.update(step);
-
-        if (this.finished) {
-            this.playWinSound();
-        }
     }
 
     /**
