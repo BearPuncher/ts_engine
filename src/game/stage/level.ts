@@ -37,6 +37,13 @@ const MAP_LAYOUTS = [
         [[MazePartType.DE, 2, false], [MazePartType.DE, 1, false], [MazePartType.TB, 3, false], [MazePartType.CO, 1, false], [MazePartType.CO, 2, false]],
         [[MazePartType.CO, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 1, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
     ],
+    [
+        [[MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.DE, 3, false], [MazePartType.CO, 3, true], [MazePartType.DE, 3, false]],
+        [[MazePartType.TB, 1, false], [MazePartType.CO, 0, true], [MazePartType.DE, 2, false], [MazePartType.ST, 0, false], [MazePartType.DE, 2, false]],
+        [[MazePartType.DE, 0, false], [MazePartType.TB, 1, false], [MazePartType.TB, 0, false], [MazePartType.CR, 0, false], [MazePartType.CO, 3, false]],
+        [[MazePartType.CO, 1, false], [MazePartType.ST, 1, true], [MazePartType.CO, 2, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, true]],
+        [[MazePartType.CO, 0, false], [MazePartType.CO, 3, false], [MazePartType.CO, 0, false], [MazePartType.DE, 3, false], [MazePartType.EX, 0, false]],
+    ],
 ];
 
 // TODO: move maze data to actual levels
