@@ -28,7 +28,7 @@ export default class Level1 extends Level {
         super.addActor(this.p1);
         this.p1.maze = this.m;
 
-        this.createTreasure({x: 308, y: 48});
+        this.createTreasure({x: 304, y: 48});
         this.createTreasure({x: 432, y: 432});
 
         const lantern = new Lantern(this.p1, 36);
