@@ -8,37 +8,9 @@ import * as TinyMusic from '../../../node_modules/tinymusic';
 export interface IScore {
     foundTreasure: number,
     treasure: number,
-    time: string,
+    timeString: string,
+    time: number;
 }
-
-const MAP_LAYOUTS = [
-    [
-        [[MazePartType.CO, 1, false], [MazePartType.DE, 3, false], [MazePartType.DE, 2, false], [MazePartType.EX, 2, false]],
-        [[MazePartType.TB, 0, true], [MazePartType.ST, 1, false], [MazePartType.CO, 3, false], [MazePartType.ST, 1, true]],
-        [[MazePartType.ST, 0, false], [MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.TB, 3, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
-    ],
-    [
-        [[MazePartType.CO, 1, false], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
-        [[MazePartType.DE, 0, false], [MazePartType.TB, 0, true], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
-        [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 0, true], [MazePartType.EX, 2, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
-    ],
-    [
-        [[MazePartType.DE, 2, false], [MazePartType.CO, 1, false], [MazePartType.EX, 3, false], [MazePartType.CO, 1, false], [MazePartType.CO, 2, false]],
-        [[MazePartType.ST, 0, false], [MazePartType.TB, 2, true], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false], [MazePartType.ST, 1, true]],
-        [[MazePartType.CO, 0, false], [MazePartType.CO, 3, false], [MazePartType.TB, 0, true], [MazePartType.ST, 1, false], [MazePartType.CO, 3, false]],
-        [[MazePartType.DE, 2, false], [MazePartType.DE, 1, false], [MazePartType.TB, 3, false], [MazePartType.CO, 1, false], [MazePartType.CO, 2, false]],
-        [[MazePartType.CO, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 1, true], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
-    ],
-    [
-        [[MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.DE, 3, false], [MazePartType.CO, 3, true], [MazePartType.DE, 3, false]],
-        [[MazePartType.TB, 1, false], [MazePartType.CO, 0, true], [MazePartType.DE, 2, false], [MazePartType.ST, 0, false], [MazePartType.DE, 2, false]],
-        [[MazePartType.DE, 0, false], [MazePartType.TB, 1, false], [MazePartType.TB, 0, false], [MazePartType.CR, 0, false], [MazePartType.CO, 3, false]],
-        [[MazePartType.CO, 1, false], [MazePartType.ST, 1, true], [MazePartType.CO, 2, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, true]],
-        [[MazePartType.CO, 0, false], [MazePartType.CO, 3, false], [MazePartType.CO, 0, false], [MazePartType.DE, 3, false], [MazePartType.EX, 0, false]],
-    ],
-];
 
 // TODO: move maze data to actual levels
 export abstract class Level extends TSE.Stage {
@@ -235,7 +207,12 @@ export abstract class Level extends TSE.Stage {
     }
 
     public getScore(): IScore {
-        return {treasure: this.treasures.length, foundTreasure: this.numTreasures, time: this.getTimeString()};
+        return {
+            treasure: this.treasures.length,
+            foundTreasure: this.numTreasures,
+            timeString: this.getTimeString(),
+            time: 1000 * Math.round(this.playTime / 1000)
+        };
     }
 
     protected createTreasure(point: TSE.Math.IPoint) {
@@ -244,18 +221,19 @@ export abstract class Level extends TSE.Stage {
         super.addActor(treasure);
     }
 
-    protected setMapPartsFromLevel(level: number): void {
+    protected setMapParts(layout: any[][]): void {
         const mazeParts: MazePart[][] = [];
 
         let row: number = 0;
-        for (let array of MAP_LAYOUTS[level]) {
+        for (let array of layout) {
             mazeParts[row] = [];
             for (let col = 0; col < array.length; col++) {
-                const data = array[col];
-                mazeParts[row][col] = MazePartFactory.create(Number(data[0]), Number(data[1]), Boolean(data[2]));
+                const data: any = array[col];
+                mazeParts[row][col] = MazePartFactory.create(data[0], data[1], data[2]);
             }
             row++;
         }
+
         this.m.setMazeParts(mazeParts);
     }
 
@@ -276,7 +254,7 @@ export abstract class Level extends TSE.Stage {
         ctx.translate(cX, cY);
         this.camera = {x: cX, y: cY};
         super.render();
-        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r + 32);
+        this.m.drawShadows(this.p1.lantern.p, this.p1.lantern.r + 64);
         this.m.drawMazePostEffects();
     }
 

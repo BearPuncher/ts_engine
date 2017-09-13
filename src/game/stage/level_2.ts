@@ -3,16 +3,24 @@ import Lantern from '../actors/lantern';
 import {Level} from './level';
 import Maze from '../actors/maze';
 import Player from '../actors/player';
+import {MazePartType} from "../actors/maze_part";
 
 const WIDTH: number = 640;
 const HEIGHT: number = 512;
 const TILE_SIZE: number = 128;
 
+const LAYOUT = [
+    [[MazePartType.CO, 1, false], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.CO, 2, false]],
+    [[MazePartType.DE, 0, false], [MazePartType.TB, 0, true], [MazePartType.TB, 0, false], [MazePartType.CO, 2, false], [MazePartType.DE, 0, false]],
+    [[MazePartType.CO, 1, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.TB, 0, true], [MazePartType.EX, 2, false]],
+    [[MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.DE, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false]],
+];
+
 export default class Level2 extends Level {
 
     public init(): void {
         this.m = new Maze(WIDTH, HEIGHT, TILE_SIZE);
-        this.setMapPartsFromLevel(1);
+        this.setMapParts(LAYOUT);
         super.addActor(this.m);
 
         const ACTOR_LENGTH: number = 16;

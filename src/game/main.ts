@@ -7,6 +7,8 @@ import * as TinyMusic from '../../node_modules/tinymusic';
 import Level3 from "./stage/level_3";
 import {IScore} from "./stage/level";
 import Level4 from "./stage/level_4";
+import Level5 from "./stage/level_5";
+import Level6 from "./stage/level_6";
 
 const WIDTH: number = 640;
 const HEIGHT: number = 480;
@@ -37,6 +39,12 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
             SCORES.push((engine.currentStage as any).getScore());
             initLevelFour();
         } else if (engine.currentStage instanceof Level4) {
+            SCORES.push((engine.currentStage as any).getScore());
+            initLevelFive();
+        } else if (engine.currentStage instanceof Level5) {
+            SCORES.push((engine.currentStage as any).getScore());
+            initLevelSix();
+        } else if (engine.currentStage instanceof Level6) {
             SCORES.push((engine.currentStage as any).getScore());
             initGameOver();
         }
@@ -69,6 +77,13 @@ function initLevelFour(): void {
     ENGINE.setStage(new Level4(WIDTH, HEIGHT, ac));
 }
 
+function initLevelFive(): void {
+    ENGINE.setStage(new Level5(WIDTH, HEIGHT, ac));
+}
+
+function initLevelSix(): void {
+    ENGINE.setStage(new Level6(WIDTH, HEIGHT, ac));
+}
 
 function initGameOver(): void {
     const end = new EndScreen(WIDTH, HEIGHT);

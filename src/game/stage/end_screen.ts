@@ -33,7 +33,7 @@ export class EndScreen extends TSE.Stage {
 
         for (const score of this.scores) {
             this.ctx.font = '20px Blippo, fantasy';
-            const scoreString: string = 'Level ' + level + ': ' + score.foundTreasure + '/' + score.treasure + ' treasures   Time: ' + score.time;
+            const scoreString: string = 'Level ' + level + ': ' + score.foundTreasure + '/' + score.treasure + ' treasures   Time: ' + score.timeString;
             const halfScoreWidth: number = this.ctx.measureText(scoreString).width / 2;
             this.ctx.fillText(
                 scoreString, this.w / 2 - halfScoreWidth,
