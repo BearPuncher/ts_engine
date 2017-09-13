@@ -13,7 +13,7 @@ const TILE_SIZE: number = 128;
 
 const LAYOUT = [
     [[MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.ST, 0, true], [MazePartType.CO, 2, false], [MazePartType.CO, 1, false], [MazePartType.DE, 3, false]],
-    [[MazePartType.TB, 1, false], [MazePartType.CO, 1, true], [MazePartType.DE, 2, false], [MazePartType.CO, 0, false], [MazePartType.TB, 3, true], [MazePartType.DE, 2, false]],
+    [[MazePartType.TB, 1, false], [MazePartType.CO, 1, true], [MazePartType.DE, 2, false], [MazePartType.CO, 0, false], [MazePartType.TB, 2, true], [MazePartType.DE, 2, false]],
     [[MazePartType.DE, 0, false], [MazePartType.CO, 0, false], [MazePartType.CR, 0, false], [MazePartType.ST, 1, false], [MazePartType.CR, 0, false], [MazePartType.CO, 3, false]],
     [[MazePartType.CO, 1, false], [MazePartType.ST, 1, false], [MazePartType.TB, 3, false], [MazePartType.CO, 1, false], [MazePartType.ST, 1, true], [MazePartType.CO, 2, false]],
     [[MazePartType.DE, 2, true], [MazePartType.EX, 1, false], [MazePartType.CO, 3, false], [MazePartType.CO, 0, false], [MazePartType.CO, 3, false], [MazePartType.DE, 0, false]],
