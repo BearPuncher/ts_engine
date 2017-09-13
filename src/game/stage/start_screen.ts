@@ -68,7 +68,6 @@ export class StartScreen extends TSE.Stage {
         super.update(step);
         const controls: TSE.Controller = new TSE.Controller();
 
-        // Toggle map mode
         if (controls.isPressed(TSE.Controller.keys.SPACE) || controls.isPressed(TSE.Controller.keys.ENTER)) {
             this.finished = true;
             this.leadSequence.stop();

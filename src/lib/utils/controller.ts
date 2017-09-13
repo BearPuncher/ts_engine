@@ -49,6 +49,8 @@ export default class Controller {
             SHIFT: 16,
             M: 77,
             ESC: 27,
+            R: 82,
+            T: 84,
         };
         Controller.instance = this;
     }

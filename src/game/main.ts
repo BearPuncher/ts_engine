@@ -15,7 +15,7 @@ const HEIGHT: number = 480;
 const CANVAS: string = 'game';
 const LOADER: TSE.AssetLoader = new TSE.AssetLoader();
 const ac: AudioContext = new AudioContext;
-const SCORES: IScore[] = [];
+let SCORES: IScore[] = [];
 
 function setupEngine(width: number, height: number, canvasId: string): TSE.Engine {
     const engine = new TSE.Engine(width, height, document.getElementById(canvasId));
@@ -47,6 +47,8 @@ function setupEngine(width: number, height: number, canvasId: string): TSE.Engin
         } else if (engine.currentStage instanceof Level6) {
             SCORES.push((engine.currentStage as any).getScore());
             initGameOver();
+        } else if (engine.currentStage instanceof EndScreen) {
+            initStartScreen();
         }
     });
 
@@ -57,6 +59,7 @@ function initStartScreen(): void {
     const stage = new StartScreen(WIDTH, HEIGHT);
     stage.ac = ac;
     ENGINE.setStage(stage);
+    SCORES = [];
 }
 
 function initLevelOne(): void {
