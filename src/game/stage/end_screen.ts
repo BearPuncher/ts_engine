@@ -61,7 +61,7 @@ export class EndScreen extends TSE.Stage {
 
         for (const score of this.scores) {
             this.ctx.font = '20px Blippo, fantasy';
-            const scoreString: string = 'Level ' + level + ': ' + score.foundTreasure + '/' + score.treasure + ' treasures   Time: ' + score.timeString;
+            const scoreString: string = 'Level ' + level + ':  ' + score.foundTreasure + '/' + score.treasure + ' treasures   Time:  ' + score.timeString;
             const halfScoreWidth: number = this.ctx.measureText(scoreString).width / 2;
             this.ctx.fillText(
                 scoreString, this.w / 2 - halfScoreWidth,
@@ -79,14 +79,14 @@ export class EndScreen extends TSE.Stage {
 
         textHeighjtStart += 30;
         this.ctx.font = '30px Blippo, fantasy';
-        const finalScoreString: string = 'Final Score: ' + this.totalTreasureFound + '/' + this.totalTreasures + ' treasures   ';
+        const finalScoreString: string = 'Final Score:  ' + this.totalTreasureFound + '/' + this.totalTreasures + ' treasures   ';
         const finalScoreWidth: number = this.ctx.measureText(finalScoreString).width / 2;
         this.ctx.fillText(
             finalScoreString, this.w / 2 - finalScoreWidth,
             textHeighjtStart);
 
         textHeighjtStart += 40;
-        const finalTimeString: string = 'Total Time: ' + timeString;
+        const finalTimeString: string = 'Total Time:  ' + timeString;
         const finalTimeWidth: number = this.ctx.measureText(finalTimeString).width / 2;
         this.ctx.fillText(
             finalTimeString, this.w / 2 - finalTimeWidth,
